@@ -1,0 +1,8 @@
+.nav-icon {
+    position: relative;
+    display: block;
+    min-width: 50px;
+    height: 30px;
+    line-height: 60px;
+    color: var(--border-color);
+}

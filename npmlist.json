@@ -1,0 +1,69 @@
+{
+    "version": "0.1.0",
+    "name": "magic_post",
+    "dependencies": {
+        "@emotion/react": {
+            "version": "11.10.6"
+        },
+        "@emotion/styled": {
+            "version": "11.10.6"
+        },
+        "@mui/joy": {
+            "version": "5.0.0-alpha.75"
+        },
+        "@mui/material": {
+            "version": "5.12.1"
+        },
+        "@mui/styled-engine-sc": {
+            "version": "5.12.0"
+        },
+        "@nivo/core": {
+            "version": "0.80.0"
+        },
+        "@nivo/line": {
+            "version": "0.80.0"
+        },
+        "@testing-library/jest-dom": {
+            "version": "5.16.5"
+        },
+        "@testing-library/react": {
+            "version": "13.4.0"
+        },
+        "@testing-library/user-event": {
+            "version": "13.5.0"
+        },
+        "bootstrap": {
+            "version": "5.2.3"
+        },
+        "chart.js": {
+            "version": "4.2.1"
+        },
+        "firebase": {
+            "version": "9.18.0"
+        },
+        "react-bootstrap": {
+            "version": "2.7.2"
+        },
+        "react-dom": {
+            "version": "18.2.0"
+        },
+        "react-icons": {
+            "version": "4.8.0"
+        },
+        "react-router-dom": {
+            "version": "6.9.0"
+        },
+        "react-scripts": {
+            "version": "5.0.1"
+        },
+        "react": {
+            "version": "18.2.0"
+        },
+        "styled-components": {
+            "version": "5.3.9"
+        },
+        "web-vitals": {
+            "version": "2.1.4"
+        }
+    }
+}
