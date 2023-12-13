@@ -85,12 +85,14 @@ const columns = [
   },
 ];
 
+const gdpoint = "CN8";
+
 function createData(id, username, name, gd, dob, sex, email, phone, password) {
   return {
     id: String(id),
     username: String(username),
     name: String(name),
-    gd: String(gd),
+    gd: gdpoint,
     dob: String(dob),
     sex: String(sex),
     email: String(email),
@@ -104,7 +106,6 @@ const data = [
     "1",
     "ugd1",
     "Trần Danggggg",
-    "UET",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -115,7 +116,6 @@ const data = [
     "2",
     "ugd2",
     "aTrần Dang",
-    "ULIS",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -126,7 +126,6 @@ const data = [
     "3",
     "ugd3",
     "bTrần Dang",
-    "UEB",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -137,7 +136,6 @@ const data = [
     "4",
     "ugd4",
     "cTrần Dang",
-    "UED",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -148,7 +146,6 @@ const data = [
     "5",
     "ugd5",
     "Trần Dang",
-    "UMP",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -159,7 +156,6 @@ const data = [
     "6",
     "ugd6",
     "dTrần Dang",
-    "TMU",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -170,7 +166,6 @@ const data = [
     "7",
     "ugd7",
     "eTrần Dang",
-    "HUS",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -181,7 +176,6 @@ const data = [
     "8",
     "ugd8",
     "dTrần Dang",
-    "HUST",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -192,7 +186,6 @@ const data = [
     "9",
     "ugd9",
     "kTrần Dang",
-    "NEU",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -203,7 +196,6 @@ const data = [
     "9",
     "ugd9",
     "Tugdrần Dang",
-    "HUST",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -214,7 +206,6 @@ const data = [
     "10",
     "ugd10",
     "oTugdrần Dang",
-    "FTU",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -225,7 +216,6 @@ const data = [
     "11",
     "ugd11",
     "Tugdrần kDang",
-    "HUHUHU",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -236,7 +226,6 @@ const data = [
     "12",
     "ugd12",
     "Tugdrầng Dang",
-    "HSHSHHS",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -247,94 +236,20 @@ const data = [
     "13",
     "ugd13",
     "Tugdrầng Dang",
-    "HSBLA",
     "26/08/2003",
     "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "14",
-    "ugd14",
-    "Tugdrầng Dang",
-    "BLALABAL",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "15",
-    "ugd15",
-    "Tugdrầng Dang",
-    "KSJSJS",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "16",
-    "ugd16",
-    "Tugdrầng gbDang",
-    "SGKWB",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "17",
-    "ugd17",
-    "Tugdrầng Danhg",
-    "HWBKF",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "18",
-    "ugd18",
-    "Tugdrầng Dang",
-    "JWNGB",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "19",
-    "ugd19",
-    "Tugdrầng Dang",
-    "UBGW",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "20",
-    "ugd20",
-    "Tugdrầng Dang",
-    "HWBKB",
-    "26/08/2003",
-    "Nam",
     "bhnj@gmail.com",
     "012345678",
     "dang1234"
   ),
 ];
 
-export function getDataGDacc() {
+export function getDataGDVacc() {
   return data;
+}
+
+export function getGDpoint() {
+  return gdpoint;
 }
 
 export default function GDV_Account() {
@@ -482,6 +397,7 @@ export default function GDV_Account() {
         row.id === selectedRow.id ? { ...row, ...updatedRowData } : row
       )
     );
+    alert("Cập nhật thông tin thành công!");
     setUpdateDialogOpen(false);
     setSelectedRow(null);
   };

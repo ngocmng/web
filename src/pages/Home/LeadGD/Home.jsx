@@ -59,7 +59,7 @@ const HomeGD = () => {
               sx={{
                 fontFamily: "var(--font-roboto)",
                 fontWeight: "bold",
-                color: "var(--title-color)",
+                color: "var(--secondary-color)",
               }}
             >
               Magic Post
@@ -73,7 +73,7 @@ const HomeGD = () => {
                 lg: "20px",
               }}
               sx={{
-                color: "var(--font1-color)",
+                color: "var(--secondary-color)",
                 textAlign: "start",
                 fontFamily: "var(--font-inter)",
               }}

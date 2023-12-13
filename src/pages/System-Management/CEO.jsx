@@ -3,13 +3,22 @@ import Page from "../../components/Page";
 import GD_Table from "../../components/Table/GD_System";
 import TK_Table from "../../components/Table/TK_System";
 import Switch from "../../components/Switch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { dexieDB, fetchData } from "../../database/cache";
 
 const System = () => {
+    const dataGD = useLiveQuery(() => dexieDB.table("GDsystem").toArray());  
+  const dataTK = useLiveQuery(() => dexieDB.table("TKsystem").toArray());
+  
   const [stateView, setStateView] = useState("GD");
   const switchState = (state) => setStateView(state ? "TK" : "GD");
   const toggleTable = () => {
-    return stateView === "GD" ? <GD_Table /> : <TK_Table />;
+    return stateView === "GD" ? (
+      <GD_Table data={dataGD} tkData={dataTK}/>
+    ) : (
+      <TK_Table data={dataTK} gdData={dataGD} />
+    );
   };
   return (
     <Page>
@@ -26,9 +35,6 @@ const System = () => {
           lg={12}
           md={12}
           xs={12}
-          // sx={{
-          //   bgcolor: "var(--secondary-color)"
-          // }}
         >
           <Stack
             spacing={{ xs: 0, sm: 0 }}
@@ -36,7 +42,6 @@ const System = () => {
           >
             <Box
               sx={{
-                //bgcolor: "var(--secondary-color)",
                 borderRadius: 2,
                 borderBottomLeftRadius: 0,
                 borderBottomRightRadius: 0,
@@ -52,10 +57,8 @@ const System = () => {
                 justifyContent="space-between"
                 alignItems="center"
                 sx={{
-                  // bgcolor: "var(--background-color)",
-                  padding: "10px"
+                  padding: "10px",
                 }}
-                
               >
                 <Typography
                   sx={{
@@ -71,8 +74,8 @@ const System = () => {
                     zIndex: 1,
                   }}
                 >
-                    Hệ thống các điểm{" "}
-                    {stateView === "GD" ? "giao dịch" : "tập kết"}
+                  Hệ thống các điểm{" "}
+                  {stateView === "GD" ? "giao dịch" : "tập kết"}
                 </Typography>
                 <Switch onSwitch={switchState} />
               </Stack>
@@ -86,4 +89,3 @@ const System = () => {
 };
 
 export default System;
-

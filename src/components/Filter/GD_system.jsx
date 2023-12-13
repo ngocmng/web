@@ -32,7 +32,7 @@ const GDFilterComponent = ({ filters, onFilterChange, data }) => {
         Filter
       </Typography> */}
       <Grid container spacing={1} >
-      <Grid item xs={2} sm={2.4}>
+      <Grid item xs={2.4} sm={2.4}>
           <Autocomplete
             options={uniqueIds} 
             renderInput={(params) => (
@@ -49,7 +49,7 @@ const GDFilterComponent = ({ filters, onFilterChange, data }) => {
             onInputChange={(e, value) => handleAutocompleteChange("id", value)}
           />
         </Grid>
-        <Grid item xs={2.4} sm={2.4}>
+        <Grid item xs={3} sm={2.4}>
           <Autocomplete
             options={uniqueNames} // Sử dụng mảng chứa các giá trị duy nhất
             renderInput={(params) => (
@@ -68,7 +68,7 @@ const GDFilterComponent = ({ filters, onFilterChange, data }) => {
             }
           />
         </Grid>
-        <Grid item xs={3} sm={2.4}>
+        <Grid item xs={4} sm={2.4}>
           <Autocomplete
             options={uniqueManages} 
             renderInput={(params) => (
@@ -87,7 +87,7 @@ const GDFilterComponent = ({ filters, onFilterChange, data }) => {
             }
           />
         </Grid>
-        <Grid item xs={3} sm={2.4}>
+        <Grid item xs={3.5} sm={2.4}>
           <Autocomplete
             options={uniqueCoverAreas} 
             renderInput={(params) => (
@@ -108,7 +108,7 @@ const GDFilterComponent = ({ filters, onFilterChange, data }) => {
             }
           />
         </Grid>
-        <Grid item xs={2.4} sm={2.4}>
+        <Grid item xs={3.5} sm={2.4}>
           <Autocomplete
             options={uniqueTKpoints} 
             renderInput={(params) => (

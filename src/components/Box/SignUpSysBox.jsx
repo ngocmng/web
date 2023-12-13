@@ -2,10 +2,11 @@ import { useState } from "react";
 
 import { Typography, Stack, Box } from "@mui/material";
 import SignUpForm from "../FormInput/SignUpSysForm";
-import { getDataGDsys } from "../Table/GD_System";
-import { getDataTksys } from "../Table/TK_System";
+import { addDataToFireStoreAndDexie} from "../../database/cache";
+
 
 const SignUpSysBox = ({ data, centerroot, onClose }) => {
+  //console.log(data);
   const defaultForm = {
     id: "",
     name: "",
@@ -13,102 +14,83 @@ const SignUpSysBox = ({ data, centerroot, onClose }) => {
     hotline: "",
     email: "",
     address: "",
-    setDay: "",
+    setDay: new Date(),
     coverArea: "",
     TKpoint: "",
   };
   const [form, setForm] = useState(defaultForm);
-
-  const handleChange = (e) =>
+  const handleChange = (e) => 
     setForm({ ...form, [e.target.name]: e.target.value });
+  
 
   const handleSubmit = () => {
+    //console.log(data);
     const submit = async () => {
       const { id, name, manage, hotline, address, setDay, coverArea, TKpoint } =
         form;
 
-      if (centerroot === "gd") {
-        if (!/^GD\d{2}$/.test(id)) {
-          alert("ID không hợp lệ");
-          return;
-        }
-      }
+      let lastID = "";
+      data.forEach((item) => {
+        const currentID = item.id;
+        const currentNumber = parseInt(currentID.slice(2));
+        //if (currentNumber > parseInt(lastID.slice(2))) {
+        lastID =
+          centerroot === "tk"
+            ? `TK${(currentNumber + 1).toString()}`
+            : `GD${(currentNumber + 1).toString()}`;
+        //}
+      });
 
-      if (centerroot === "tk") {
-        if (!/^TK\d{2}$/.test(id)) {
-          alert("ID không hợp lệ");
-          return;
-        }
-      }
-
+      const matchingName = data.find((item) => item.name === name);
       if (centerroot === "gd") {
-        const getGDsystem = getDataGDsys();
-        if (getGDsystem.some((row) => row.id === id)) {
-          alert("ID đã tồn tại");
-          return;
-        }
-        if (
-          getGDsystem.some((row) => row.name.toLowerCase() === name.toLowerCase())
-        ) {
+        if (matchingName) {
           alert("Điểm GD này đã tồn tại");
           return;
         }
       }
 
       if (centerroot === "tk") {
-        const getTKsystem = getDataTksys();
-        if (getTKsystem.some((row) => row.id === id)) {
-          alert("ID đã tồn tại");
-          return;
-        }
-        if (
-          getTKsystem.some((row) => row.name.toLowerCase() === name.toLowerCase())
-        ) {
+        if (matchingName) {
           alert("Điểm TK này đã tồn tại");
           return;
         }
       }
 
-      const email = `${id.toLowerCase()}@magic-post.com`;
-      setForm({
-        ...form,
-        email,
-      });
+      const realID = lastID;
+      console.log(realID);
+      const form2 = {
+        ...form, 
+        id: realID,
+        email: `${realID.toLowerCase()}@magic-post.com`, 
+      };
+      //console.log(form2);
 
       if (centerroot === "gd") {
         if (
-            !name ||
-            !manage ||
-            !hotline ||
-            !address ||
-            !setDay ||
-            !coverArea ||
-            !TKpoint
-          ) {
-            alert("Vui lòng điền đầy đủ các mục");
-            return;
-          }
+          !name ||
+          !manage ||
+          !hotline ||
+          !address ||
+          !setDay ||
+          !coverArea ||
+          !TKpoint
+        ) {
+          alert("Vui lòng điền đầy đủ các mục");
+          return;
+        }
       }
       if (centerroot === "tk") {
-        if (
-            !name ||
-            !manage ||
-            !hotline ||
-            !address ||
-            !setDay
-          ) {
-            alert("Vui lòng điền đầy đủ các mục");
-            return;
-          }
+        if (!name || !manage || !hotline || !address || !setDay) {
+          alert("Vui lòng điền đầy đủ các mục");
+          return;
+        }
       }
 
       if (centerroot === "gd") {
-        console.log(form);
-        alert("Điểm giao dịch đã được thêm thành công");
+        addDataToFireStoreAndDexie("GDsystem", form2);
       }
       if (centerroot === "tk") {
-        console.log(form);
-        alert("Điểm tập kết đã được thêm thành công");
+        addDataToFireStoreAndDexie("TKsystem", form2);
       }
     };
 
@@ -133,7 +115,7 @@ const SignUpSysBox = ({ data, centerroot, onClose }) => {
           position: "fixed",
           top: 0,
           right: 0,
-          width: { xs: "75%", md: "50%" },
+          width: { xs: "75%", md: "75%" },
           height: "100%",
           backgroundColor: "white",
           transition: "transform 0.5s ease",
@@ -145,7 +127,7 @@ const SignUpSysBox = ({ data, centerroot, onClose }) => {
       >
         <Box
           sx={{
-            height: { xs: "100%", md: "100%" },
+            height: { xs: "100%", md: "70%" },
             pb: "var(--padding-item)",
           }}
         >

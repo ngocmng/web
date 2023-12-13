@@ -32,7 +32,7 @@ const TKFilterComponent = ({ filters, onFilterChange, data }) => {
       <Grid container spacing={1} >
         {" "}
         {/* Thêm Grid container và spacing */}
-        <Grid item xs={6} sm={3}>
+        <Grid item xs={3} sm={3}>
           {" "}
           {/* Grid item cho mỗi filter */}
           <Autocomplete
@@ -51,7 +51,7 @@ const TKFilterComponent = ({ filters, onFilterChange, data }) => {
             onInputChange={(e, value) => handleAutocompleteChange("id", value)}
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
+        <Grid item xs={3} sm={3}>
           <Autocomplete
             options={uniqueNames}    
             renderInput={(params) => (
@@ -70,7 +70,7 @@ const TKFilterComponent = ({ filters, onFilterChange, data }) => {
             }
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
+        <Grid item xs={4} sm={3}>
           <Autocomplete
             options={uniqueManages}    
             renderInput={(params) => (

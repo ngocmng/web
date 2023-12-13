@@ -92,12 +92,14 @@ const columns = [
   },
 ];
 
+const tkpoint = "UET";
+
 function createData(id, username, name, tk, dob, sex, email, phone, password) {
   return {
     id,
     username,
     name,
-    tk,
+    tk:tkpoint,
     dob,
     sex,
     email,
@@ -111,7 +113,6 @@ const data = [
     "1",
     "utk1",
     "Trần Dang",
-    "UET",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -122,7 +123,6 @@ const data = [
     "2",
     "utk2",
     "aTrần Dang",
-    "ULIS",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -133,7 +133,6 @@ const data = [
     "3",
     "utk3",
     "bTrần Dang",
-    "UEB",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -144,7 +143,6 @@ const data = [
     "4",
     "utk4",
     "cTrần Dang",
-    "UED",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -155,7 +153,6 @@ const data = [
     "5",
     "utk5",
     "Trần Dang",
-    "UMP",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -166,7 +163,6 @@ const data = [
     "6",
     "utk6",
     "dTrần Dang",
-    "TMU",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -177,7 +173,6 @@ const data = [
     "7",
     "utk7",
     "eTrần Dang",
-    "HUS",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -188,7 +183,6 @@ const data = [
     "8",
     "utk8",
     "dTrần Dang",
-    "HUST",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -199,7 +193,6 @@ const data = [
     "9",
     "utk9",
     "kTrần Dang",
-    "NEU",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -210,7 +203,6 @@ const data = [
     "9",
     "utk9",
     "Tutkrần Dang",
-    "HUST",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -221,7 +213,6 @@ const data = [
     "10",
     "utk10",
     "oTutkrần Dang",
-    "FTU",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -232,7 +223,6 @@ const data = [
     "11",
     "utk11",
     "Tutkrần kDang",
-    "HUHUHU",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -243,7 +233,6 @@ const data = [
     "12",
     "utk12",
     "Tutkrầng Dang",
-    "HSHSHHS",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -254,7 +243,6 @@ const data = [
     "13",
     "utk13",
     "Tutkrầng Dang",
-    "HSBLA",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -265,7 +253,6 @@ const data = [
     "14",
     "utk14",
     "Tutkrầng Dang",
-    "BLALABAL",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -276,7 +263,6 @@ const data = [
     "15",
     "utk15",
     "Tutkrầng Dang",
-    "KSJSJS",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -287,7 +273,6 @@ const data = [
     "16",
     "utk16",
     "Tutkrầng gbDang",
-    "SGKWB",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -298,7 +283,6 @@ const data = [
     "17",
     "utk17",
     "Tutkrầng Danhg",
-    "HWBKF",
     "26/08/2003",
     "Nữ",
     "bhnj@gmail.com",
@@ -309,7 +293,6 @@ const data = [
     "18",
     "utk18",
     "Tutkrầng Dang",
-    "JWNGB",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -320,7 +303,6 @@ const data = [
     "19",
     "utk19",
     "Tutkrầng Dang",
-    "UBGW",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -331,7 +313,6 @@ const data = [
     "20",
     "utk20",
     "Tutkrầng Dang",
-    "HWBKB",
     "26/08/2003",
     "Nam",
     "bhnj@gmail.com",
@@ -340,8 +321,12 @@ const data = [
   ),
 ];
 
-export function getDataTKacc() {
+export function getDataNVTKacc() {
   return data;
+}
+
+export function getTKpoint() {
+  return tkpoint;
 }
 
 export default function NVTK_Account() {
@@ -491,6 +476,7 @@ function descendingComparator(a, b, orderBy) {
 
   const handleDeleteConfirm = () => {
     setRows((prevRows) => prevRows.filter((row) => row.id !== selectedRow.id));
+    alert("Xóa tài khoản thành công!");
     setDeleteDialogOpen(false);
     setSelectedRow(null);
   };
@@ -501,6 +487,7 @@ function descendingComparator(a, b, orderBy) {
         row.id === selectedRow.id ? { ...row, ...updatedRowData } : row
       )
     );
+    alert("Cập nhật thông tin thành công!");
     setUpdateDialogOpen(false);
     setSelectedRow(null);
   };
@@ -652,7 +639,7 @@ function descendingComparator(a, b, orderBy) {
           />
         </Grid>
       </div>
-      {IsSignUpBoxVisible ? <SignUpBox centerroot = {"tk"} onClose={handleCloseSignUpBox} /> : null}
+      {IsSignUpBoxVisible ? <SignUpBox centerroot = {"nvtk"} onClose={handleCloseSignUpBox} /> : null}
 
       <NVTKFilterComponent
         filters={filters}

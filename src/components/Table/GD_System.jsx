@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
+import { useLiveQuery } from "dexie-react-hooks";
 import {
   Box,
   Table,
@@ -19,20 +20,25 @@ import {
   DialogTitle,
   TextField,
   Grid,
-  IconButton
+  IconButton,
+  Autocomplete,
 } from "@mui/material";
 
-// import {
-//   EditIcon,
-//   DeleteIcon,
-// } from "@mui/icons-material";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { visuallyHidden } from "@mui/utils";
 import GDFilterComponent from "../Filter/GD_system";
 import SignUpSysBox from "../Box/SignUpSysBox";
 import Buttonme from "../Buttonme/Buttonme";
+import {
+  deleteDataFromDexieTable,
+  deleteDataFromFireStore,
+  deleteDataFromFireStoreAndDexie,
+  dexieDB,
+  syncDexieToFirestore,
+  updateDataFromFireStoreAndDexie,
+} from "../../database/cache";
 
 const columns = [
   {
@@ -95,6 +101,16 @@ const columns = [
     label: "Điểm tập kết",
   },
 ];
+const changeDateForm = (date) => {
+  if (typeof date === "string") {
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+  } else {
+    return ""; 
+  }
+};
+
+
 
 function createData(
   id,
@@ -108,261 +124,41 @@ function createData(
   TKpoint
 ) {
   return {
-    id: String(id),
-    name: String(name),
-    manage: String(manage),
-    hotline: String(hotline),
-    email: String(email),
-    address: String(address),
-    setDay: String(setDay),
-    coverArea: String(coverArea),
-    TKpoint: String(TKpoint),
+    id,
+    name,
+    manage,
+    hotline,
+    email,
+    address,
+    setDay: changeDateForm(setDay),
+    coverArea,
+    TKpoint,
   };
 }
 
-const data = [
-  createData(
-    "GD01",
-    "CNTT",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "137Đ.Phú Mỹ,Mỹ Đình2,NamTừLiêm,Hà Nội",
-    "08/11/2023",
-    "Nam_Từ_Liêm",
-    "UET"
-  ),
-  createData(
-    "CN2",
-    "KTMT",
-    "Mama",
-    "086880913",
-    "cn2@gmail.com",
-    "137 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "09/11/2023",
-    "Nam Từ Liêm",
-    "UET"
-  ),
-  createData(
-    "CN8",
-    "CNTTCLC",
-    "Kaka",
-    "0868809174",
-    "cn8@gmail.com",
-    "138 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "10/11/2023",
-    "Cầu Giấy",
-    "UET"
-  ),
-  createData(
-    "CN3",
-    "CNTT123",
-    "Haha",
-    "0868809175",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Cầu Giấy, Hà Nội",
-    "11/11/2023",
-    "Cầu Giấy",
-    "UET"
-  ),
-  createData(
-    "CN4",
-    "Bla Bla",
-    "Hoho",
-    "0868809178",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "12/11/2023",
-    "Nam Từ Liêm",
-    "ULIS"
-  ),
-  createData(
-    "CN5",
-    "CNTTCLCCCC",
-    "Hohiii",
-    "0868809189",
-    "cn6@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/10/2023",
-    "Nam Từ Liêm",
-    "UEB"
-  ),
-  createData(
-    "CN6",
-    "CNTT",
-    "Aoho",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/09/2023",
-    "Nam Từ Liêm",
-    "UED"
-  ),
-  createData(
-    "CN7",
-    "KTMT",
-    "Koho",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "20/11/2023",
-    "Nam Từ Liêm",
-    "IS"
-  ),
-  createData(
-    "CN9",
-    "CNTTCLC",
-    "Loho",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "17/11/2022",
-    "Nam Từ Liêm",
-    "UMP"
-  ),
-  createData(
-    "CN10",
-    "CNTT",
-    "FVGnm",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/11/2022",
-    "Nam Từ Liêm",
-    "USSH"
-  ),
-  createData(
-    "CN11",
-    "KTMT",
-    "Hortyo",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/11/2021",
-    "Nam Từ Liêm",
-    "HUS"
-  ),
-  createData(
-    "CN12",
-    "CNTTCLC",
-    "PPoho",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/02/2020",
-    "Nam Từ Liêm",
-    "TMU"
-  ),
-  createData(
-    "CN13",
-    "CNTT",
-    "Hohorty",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "11/02/2023",
-    "Nam Từ Liêm",
-    "NEU"
-  ),
-  createData(
-    "CN14",
-    "KTMT",
-    "Hohodètgh",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "24/12/2022",
-    "Nam Từ Liêm",
-    "HUST"
-  ),
-  createData(
-    "CN15",
-    "CNTTCLC",
-    "Hodfvgho",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "07/04/2023",
-    "Nam Từ Liêm",
-    "UET"
-  ),
-  createData(
-    "CN16",
-    "CNTT",
-    "Hohodcfgv",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "01/11/2023",
-    "Nam Từ Liêm",
-    "UET"
-  ),
-  createData(
-    "CN26",
-    "KTMT",
-    "Hohocfvgb",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "03/11/2020",
-    "Nam Từ Liêm",
-    "UET"
-  ),
-  createData(
-    "CN82",
-    "CNTTCLC",
-    "Hohosedrbh",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "02/05/2023",
-    "Nam Từ Liêm",
-    "UET"
-  ),
-  createData(
-    "CN19",
-    "CNTT",
-    "Hcfvghboho",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "21/04/2023",
-    "Nam Từ Liêm",
-    "UET"
-  ),
-  createData(
-    "CN22",
-    "KTMT",
-    "Hohocfvgbh",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "05/11/2023",
-    "Nam Từ Liêm",
-    "UET"
-  ),
-  createData(
-    "CN83",
-    "CNTTCLC",
-    "Dhgjbkoho",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/11/2023",
-    "Nam Từ Liêm",
-    "UET"
-  ),
-];
-
-export function getDataGDsys() {
-  return data;
-}
-
-export default function GD_Table() {
+export default function GD_Table({ data, tkData }) {
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "id";
-  const DEFAULT_ROWS_PER_PAGE = 4;
-  const [rows, setRows] = useState(data);
+  const DEFAULT_ROWS_PER_PAGE = 5;
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    if (data) {
+      const newRows = data.map((item) =>
+        createData(
+          item.id,
+          item.name,
+          item.manage,
+          item.hotline,
+          item.email,
+          item.address,
+          item.setDay,
+          item.coverArea,
+          item.TKpoint
+        )
+      );
+      setRows(newRows);
+    }
+  }, [data]);
 
   // Sort
   function descendingComparator(a, b, orderBy) {
@@ -466,6 +262,7 @@ export default function GD_Table() {
   const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
   const [paddingHeight, setPaddingHeight] = useState(0);
   const [filteredRowCount, setFilteredRowCount] = useState(0);
+
   const [filters, setFilters] = useState({
     id: "",
     name: "",
@@ -493,17 +290,15 @@ export default function GD_Table() {
   };
 
   const handleDeleteConfirm = () => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== selectedRow.id));
+    deleteDataFromFireStoreAndDexie("GDsystem", selectedRow.id);
+    //alert("Xóa tài khoản thành công!");
     setDeleteDialogOpen(false);
     setSelectedRow(null);
   };
 
+
   const handleUpdateConfirm = (updatedRowData) => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === selectedRow.id ? { ...row, ...updatedRowData } : row
-      )
-    );
+    updateDataFromFireStoreAndDexie("GDsystem", selectedRow.id, updatedRowData)
     setUpdateDialogOpen(false);
     setSelectedRow(null);
   };
@@ -537,8 +332,10 @@ export default function GD_Table() {
           : true)
       );
     });
-    const filteredRowCount = filteredData.length; // Số hàng phù hợp với bộ lọc
-    setFilteredRowCount(filteredRowCount); // Cập nhật filteredRowCount
+
+    if (filteredData !== 0) {
+      setFilteredRowCount(filteredData.length);
+    }
     return filteredData;
   };
 
@@ -623,7 +420,10 @@ export default function GD_Table() {
 
   const handleChangeRowsPerPage = useCallback(
     (event) => {
-      const updatedRowsPerPage = parseInt(event.target.value, DEFAULT_ROWS_PER_PAGE);
+      const updatedRowsPerPage = parseInt(
+        event.target.value,
+        DEFAULT_ROWS_PER_PAGE
+      );
       setRowsPerPage(updatedRowsPerPage);
 
       setPage(0);
@@ -660,7 +460,7 @@ export default function GD_Table() {
       </div>
       {IsSignUpBoxVisible ? (
         <SignUpSysBox
-          data={rows}
+          data={data}
           centerroot={"gd"}
           onClose={handleCloseSignUpBox}
         />
@@ -702,31 +502,71 @@ export default function GD_Table() {
                 order={order}
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
-                rowCount={filteredRowCount}
+                rowCount={rows.length}
               />
               <TableBody>
                 {visibleRows
                   ? visibleRows.map((row) => {
                       return (
                         <TableRow hover sx={{ overflow: "auto" }}>
-                          <TableCell>{row.id}</TableCell>
-                          <TableCell>{row.name}</TableCell>
-                          <TableCell>{row.manage}</TableCell>
-                          <TableCell>{row.hotline}</TableCell>
-                          <TableCell>{row.email}</TableCell>
-                          <TableCell>{row.address}</TableCell>
-                          <TableCell>{row.setDay}</TableCell>
-                          <TableCell>{row.coverArea}</TableCell>
-                          <TableCell>{row.TKpoint}</TableCell>
-                          <TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.id}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.name}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.manage}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.hotline}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.email}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.address}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.setDay}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.coverArea}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
+                            {row.TKpoint}
+                          </TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
                             <IconButton
                               onClick={() => handleUpdateClick(row)}
-                              style={{ color: 'green' }}
+                              style={{ color: "green" }}
                             >
                               <EditIcon />
                             </IconButton>
                           </TableCell>
-                          <TableCell>
+                          <TableCell
+                            style={{ paddingTop: "2px", paddingBottom: "2px" }}
+                          >
                             <IconButton
                               color="error"
                               onClick={() => handleDeleteClick(row)}
@@ -751,9 +591,7 @@ export default function GD_Table() {
           <TablePagination
             rowsPerPageOptions={[15]}
             component="div"
-            count={
-              filteredRowCount <= rows.length ? filteredRowCount : rows.length
-            }
+            count={filteredRowCount ? filteredRowCount : rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -788,7 +626,7 @@ export default function GD_Table() {
         onClose={() => setUpdateDialogOpen(false)}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Cập nhật thông tin</DialogTitle>
+        <DialogTitle id ="form-dialog-title">Cập nhật thông tin</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -805,6 +643,7 @@ export default function GD_Table() {
             id="name"
             fullWidth
             defaultValue={selectedRow ? selectedRow.name : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -826,6 +665,7 @@ export default function GD_Table() {
             id="email"
             fullWidth
             defaultValue={selectedRow ? selectedRow.email : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -840,6 +680,7 @@ export default function GD_Table() {
             id="setDay"
             fullWidth
             defaultValue={selectedRow ? selectedRow.setDay : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -848,12 +689,25 @@ export default function GD_Table() {
             fullWidth
             defaultValue={selectedRow ? selectedRow.coverArea : ""}
           />
-          <TextField
-            margin="dense"
-            label="Điểm tập kết"
-            id="TKpoint"
+          <Autocomplete
+            options={tkData ? tkData.map((option) => option.name) : []} 
             fullWidth
-            defaultValue={selectedRow ? selectedRow.TKpoint : ""}
+            value={selectedRow ? selectedRow.TKpoint : ""}
+            id = "TKpoint"
+            onChange={(event, newValue) => {
+              setSelectedRow((prevRow) => ({
+                ...prevRow,
+                TKpoint: newValue,
+              }));
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                margin="dense"
+                label="Điểm tập kết"
+                //id="TKpoint"
+              />
+            )}
           />
         </DialogContent>
         <DialogActions>
@@ -864,14 +718,12 @@ export default function GD_Table() {
             onClick={() => {
               // Lấy dữ liệu mới từ các trường TextField
               const updatedRowData = {
-                name: document.getElementById("name").value,
                 manage: document.getElementById("manage").value,
                 hotline: document.getElementById("hotline").value,
-                email: document.getElementById("email").value,
                 address: document.getElementById("address").value,
-                setDay: document.getElementById("setDay").value,
                 coverArea: document.getElementById("coverArea").value,
                 TKpoint: document.getElementById("TKpoint").value,
+               
               };
               handleUpdateConfirm(updatedRowData);
             }}

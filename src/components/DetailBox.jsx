@@ -1,18 +1,23 @@
 // DetailBox.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { getDataGDsys } from "./Table/GD_System";
 import "./DetailBox.css";
 import TK_GD_table from "./Table/TK_GD_System";
 
-const DetailBox = ({ row, isOpen, onClose }) => {
+const DetailBox = ({ GD, row, isOpen, onClose }) => {
+  const [getGD, setGetGD] = useState([]);
+ // console.log(GD);
+  useEffect(() => {
+    if (GD && row && row.id) {
+      const matchingGD = GD.filter((gd) => gd.TKpoint === row.name);
+      setGetGD(matchingGD);
+    }
+  }, [GD, row.id]);
+  //console.log(getGD);
   if (!isOpen || !row) {
     return null;
   }
-
-  const getGD = getDataGDsys().filter((GDinfo) => {
-    return GDinfo.TKpoint === row.id;
-  });
 
   return (
     <Box

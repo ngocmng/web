@@ -2,15 +2,16 @@ import { useState } from "react";
 
 import { Typography, Stack, Box } from "@mui/material";
 import SignUpForm from "../FormInput/SignUpAccForm";
-import { getDataGDacc} from "../Table/GD_Account";
+import { getDataGDacc } from "../Table/GD_Account";
 import { getDataTKacc } from "../Table/TK_Account";
+import { getDataNVTKacc, getTKpoint } from "../Table/NVTK_Account";
 
-const SignUpAccBox = ({ centerroot, onClose }) => {
+const SignUpAccBox = ({ data, centerroot, onClose }) => {
   const defaultForm = {
     id: "",
     username: "",
     name: "",
-    center: "",
+    center: centerroot === "nvtk" ? getTKpoint() : "",
     dob: "",
     sex: "",
     email: "",
@@ -25,11 +26,18 @@ const SignUpAccBox = ({ centerroot, onClose }) => {
   const handleSubmit = () => {
     const submit = async () => {
       const { id, name, center, phone, dob, sex } = form;
-      let username = String("");
+      let user = String("");
 
-      if (!/^\d{2}$/.test(id)) {
-        alert("ID không hợp lệ");
-        return;
+      if (centerroot === "gd" || centerroot === "tk") {
+        if (!/^\d{2}$/.test(id)) {
+          alert("ID không hợp lệ");
+          return;
+        }
+      } else {
+        if (!/^\d{4}$/.test(id)) {
+          alert("ID không hợp lệ");
+          return;
+        }
       }
 
       if (centerroot === "gd") {
@@ -39,12 +47,14 @@ const SignUpAccBox = ({ centerroot, onClose }) => {
           return;
         }
         if (
-          getGDaccount.some((row) => row.gd.toLowerCase() === center.toLowerCase())
+          getGDaccount.some(
+            (row) => row.gd.toLowerCase() === center.toLowerCase()
+          )
         ) {
           alert("Tài khoản trưởng điểm GD này đã tồn tại");
           return;
         }
-        username = `LeadGD${id}`;
+        user = `LeadGD${id}`;
       }
 
       if (centerroot === "tk") {
@@ -54,35 +64,57 @@ const SignUpAccBox = ({ centerroot, onClose }) => {
           return;
         }
         if (
-          getTKaccount.some((row) => row.tk.toLowerCase() === center.toLowerCase())
+          getTKaccount.some(
+            (row) => row.tk.toLowerCase() === center.toLowerCase()
+          )
         ) {
           alert("Tài khoản trưởng điểm TK này đã tồn tại");
           return;
         }
-        username = `LeadTK${id}`;
+        user = `LeadTK${id}`;
+      }
+      if (centerroot === "nvtk") {
+        const getNVTKaccount = getDataNVTKacc();
+        if (getNVTKaccount.some((row) => row.id === id)) {
+          alert("ID đã tồn tại");
+          return;
+        }
+        user = `NVTK${id}`;
       }
 
+      const username = user;
       const email = `${username}@magic-post.com`;
-      const password = `magicPost@${username}`;
+      const password = `MP@${username}`;
       setForm({
         ...form,
         username,
         email,
         password,
       });
+      console.log(username);
+      console.log(email);
+      console.log(password);
 
-      if (!name || !phone || !center || !dob || !sex) {
+      if (!name || !phone || !dob || !sex) {
+        alert("Vui lòng điền đầy đủ các mục");
+        return;
+      }
+      if ((centerroot === "gd" || centerroot === "tk") && !center) {
         alert("Vui lòng điền đầy đủ các mục");
         return;
       }
 
       if (centerroot === "gd") {
-        console.log(form);
         alert("Tài khoản trưởng giao dịch đã được thêm thành công");
+        console.log(form);
       }
       if (centerroot === "tk") {
-        console.log(form);
         alert("Tài khoản trưởng tập kết đã được thêm thành công");
+        console.log(form);
+      }
+      if (centerroot === "nvtk") {
+        alert("Tài khoản nhân viên tập kết đã được thêm thành công");
+        console.log(form);
       }
     };
 
@@ -148,7 +180,18 @@ const SignUpAccBox = ({ centerroot, onClose }) => {
               }}
               mb={"var(--padding-item)"}
             >
-              {centerroot === "gd"? "Tạo mới tài khoản trưởng điểm giao dịch": "Tạo mới tài khoản trưởng điểm tập kết"}
+              {(() => {
+                switch (centerroot) {
+                  case "gd":
+                    return "Tạo mới tài khoản trưởng điểm giao dịch";
+                  case "tk":
+                    return "Tạo mới tài khoản trưởng điểm tập kết";
+                  case "nvtk":
+                    return "Tạo mới tài khoản nhân viên điểm tập kết";
+                  default:
+                    return "Tạo mới tài khoản giao dịch viên";
+                }
+              })()}
             </Typography>
             <SignUpForm
               center={centerroot}

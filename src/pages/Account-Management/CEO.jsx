@@ -4,12 +4,20 @@ import Switch from "../../components/Switch";
 import { useState } from "react";
 import GD_Account from "../../components/Table/GD_Account";
 import TK_Account from "../../components/Table/TK_Account";
+import { useLiveQuery } from "dexie-react-hooks";
+import { dexieDB } from "../../database/cache";
 
 const Account = () => {
+  const dataGD = useLiveQuery(() => dexieDB.table("LeadGDacc").toArray());  
+  const dataTK = useLiveQuery(() => dexieDB.table("LeadTKacc").toArray());
   const [stateView, setStateView] = useState("GD");
   const switchState = (state) => setStateView(state ? "TK" : "GD");
   const toggleTable = () => {
-    return stateView === "GD" ? <GD_Account /> : <TK_Account />;
+    return stateView === "GD" ? (
+      <GD_Account data={dataGD}/>
+    ) : (
+      <TK_Account data={dataTK}/>
+    );
   };
   return (
     <Page>

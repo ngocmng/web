@@ -31,6 +31,8 @@ import { visuallyHidden } from "@mui/utils";
 import TKFilterComponent from "../Filter/TK_account";
 import SignUpBox from "../Box/SignUpAccBox";
 import Buttonme from "../Buttonme/Buttonme";
+import SignUpAccBox from "../Box/SignUpAccBox";
+import { deleteDataFromFireStoreAndDexie, updateDataFromFireStoreAndDexie } from "../../database/cache";
 
 const columns = [
   {
@@ -92,13 +94,32 @@ const columns = [
   },
 ];
 
+const changeDateForm = (date) => {
+  if (typeof date === "string") {
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+  } else {
+    return ""; 
+  }
+};
+
+const changeDateForm2 = (date) => {
+  if (typeof date === "string") {
+    const [day, month, year] = date.split("/");
+    return `${year}-${month}-${day}`;
+  } else {
+    return ""; 
+  }
+};
+
+
 function createData(id, username, name, tk, dob, sex, email, phone, password) {
   return {
     id,
     username,
     name,
     tk,
-    dob,
+    dob: changeDateForm(dob),
     sex,
     email,
     phone,
@@ -344,13 +365,31 @@ export function getDataTKacc() {
   return data;
 }
 
-export default function TK_Account() {
+export default function TK_Account({data}) {
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "id";
   const DEFAULT_ROWS_PER_PAGE = 6;
-  const [rows, setRows] = useState(data);
+  const [rows, setRows] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    if (data) {
+      const newRows = data.map((item) =>
+        createData(
+          item.id,
+          item.username,
+          item.name,
+          item.tk,
+          item.dob,
+          item.sex,
+          item.email,
+          item.phone,
+          item.password,
+        )
+      );
+      setRows(newRows);
+    }
+  }, [data]);
   // Sort
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) return -1;
@@ -490,17 +529,13 @@ function descendingComparator(a, b, orderBy) {
   };
 
   const handleDeleteConfirm = () => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== selectedRow.id));
+    deleteDataFromFireStoreAndDexie("LeadTKacc", selectedRow.id);
     setDeleteDialogOpen(false);
     setSelectedRow(null);
   };
 
   const handleUpdateConfirm = (updatedRowData) => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === selectedRow.id ? { ...row, ...updatedRowData } : row
-      )
-    );
+    updateDataFromFireStoreAndDexie("LeadTKacc", selectedRow.id, updatedRowData)
     setUpdateDialogOpen(false);
     setSelectedRow(null);
   };
@@ -536,8 +571,9 @@ function descendingComparator(a, b, orderBy) {
             : true)
       );
     });
-    const filteredRowCount = filteredData.length; // Số hàng phù hợp với bộ lọc
-    setFilteredRowCount(filteredRowCount); // Cập nhật filteredRowCount
+    if (filteredData !== 0) {
+      setFilteredRowCount(filteredData.length);
+    }
     return filteredData;
   };
 
@@ -657,7 +693,7 @@ function descendingComparator(a, b, orderBy) {
           />
         </Grid>
       </div>
-      {IsSignUpBoxVisible ? <SignUpBox centerroot = {"tk"} onClose={handleCloseSignUpBox} /> : null}
+      {IsSignUpBoxVisible ? <SignUpAccBox data = {data} centerroot = {"tk"} onClose={handleCloseSignUpBox} /> : null}
 
       <TKFilterComponent
         filters={filters}
@@ -694,7 +730,7 @@ function descendingComparator(a, b, orderBy) {
                 order={order}
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
-                rowCount={filteredRowCount}
+                rowCount={rows.length}
               />
               <TableBody>
                 {visibleRows
@@ -758,7 +794,7 @@ function descendingComparator(a, b, orderBy) {
           <TablePagination
             rowsPerPageOptions={[15]}
             component="div"
-            count={filteredRowCount <= rows.length? filteredRowCount: rows.length}
+            count={filteredRowCount ? filteredRowCount : rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -810,6 +846,7 @@ function descendingComparator(a, b, orderBy) {
             id="username"
             fullWidth
             defaultValue={selectedRow ? selectedRow.username : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -823,7 +860,7 @@ function descendingComparator(a, b, orderBy) {
             label="Ngày sinh"
             id="dob"
             fullWidth
-            defaultValue={selectedRow ? selectedRow.dob : ""}
+            defaultValue={selectedRow ? changeDateForm2(selectedRow.dob) : ""}
           />
           <TextField
             margin="dense"
@@ -838,6 +875,7 @@ function descendingComparator(a, b, orderBy) {
             id="email"
             fullWidth
             defaultValue={selectedRow ? selectedRow.email : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -852,6 +890,7 @@ function descendingComparator(a, b, orderBy) {
             id="password"
             fullWidth
             defaultValue={selectedRow ? selectedRow.password : ""}
+            disabled
           />
         </DialogContent>
         <DialogActions>
@@ -862,13 +901,10 @@ function descendingComparator(a, b, orderBy) {
             onClick={() => {
               // Lấy dữ liệu mới từ các trường TextField
               const updatedRowData = {
-                username: document.getElementById("username").value,
                 name: document.getElementById("name").value,
                 dob: document.getElementById("dob").value,
                 sex: document.getElementById("sex").value,
-                email: document.getElementById("email").value,
                 phone: document.getElementById("phone").value,
-                password: document.getElementById("password").value,
               };
               handleUpdateConfirm(updatedRowData);
             }}

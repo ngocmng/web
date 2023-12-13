@@ -31,6 +31,7 @@ import { visuallyHidden } from "@mui/utils";
 import GDFilterComponent from "../Filter/GD_account";
 import SignUpAccBox from "../Box/SignUpAccBox";
 import Buttonme from "../Buttonme/Buttonme";
+import { deleteDataFromFireStoreAndDexie, updateDataFromFireStoreAndDexie } from "../../database/cache";
 
 const columns = [
   {
@@ -91,18 +92,35 @@ const columns = [
     label: "Password",
   },
 ];
+const changeDateForm = (date) => {
+  if (typeof date === "string") {
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+  } else {
+    return ""; 
+  }
+};
+
+const changeDateForm2 = (date) => {
+  if (typeof date === "string") {
+    const [day, month, year] = date.split("/");
+    return `${year}-${month}-${day}`;
+  } else {
+    return ""; 
+  }
+};
 
 function createData(id, username, name, gd, dob, sex, email, phone, password) {
   return {
-    id: String(id),
-    username: String(username),
-    name: String(name),
-    gd: String(gd),
-    dob: String(dob),
-    sex: String(sex),
-    email: String(email),
-    phone: String(phone),
-    password: String(password),
+    id,
+    username,
+    name,
+    gd,
+    dob: changeDateForm(dob),
+    sex,
+    email,
+    phone,
+    password,
   };
 }
 
@@ -344,13 +362,30 @@ export function getDataGDacc() {
   return data;
 }
 
-export default function GD_Account() {
+export default function GD_Account({data}) {
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "id";
   const DEFAULT_ROWS_PER_PAGE = 6;
-  const [rows, setRows] = useState(data);
+  const [rows, setRows] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
-
+  useEffect(() => {
+    if (data) {
+      const newRows = data.map((item) =>
+        createData(
+          item.id,
+          item.username,
+          item.name,
+          item.gd,
+          item.dob,
+          item.sex,
+          item.email,
+          item.phone,
+          item.password,
+        )
+      );
+      setRows(newRows);
+    }
+  }, [data]);
   //Sort
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) return -1;
@@ -487,17 +522,13 @@ export default function GD_Account() {
   };
 
   const handleDeleteConfirm = () => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== selectedRow.id));
+    deleteDataFromFireStoreAndDexie("LeadGDacc", selectedRow.id);
     setDeleteDialogOpen(false);
     setSelectedRow(null);
   };
 
   const handleUpdateConfirm = (updatedRowData) => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === selectedRow.id ? { ...row, ...updatedRowData } : row
-      )
-    );
+    updateDataFromFireStoreAndDexie("LeadGDacc", selectedRow.id, updatedRowData)
     setUpdateDialogOpen(false);
     setSelectedRow(null);
   };
@@ -529,8 +560,9 @@ export default function GD_Account() {
           : true)
       );
     });
-    const filteredRowCount = filteredData.length; // Số hàng phù hợp với bộ lọc
-    setFilteredRowCount(filteredRowCount); // Cập nhật filteredRowCount
+    if (filteredData !== 0) {
+      setFilteredRowCount(filteredData.length);
+    }
     return filteredData;
   };
 
@@ -654,7 +686,7 @@ export default function GD_Account() {
         </Grid>
       </div>
       {IsSignUpBoxVisible ? (
-        <SignUpAccBox centerroot={"gd"} onClose={handleCloseSignUpBox} />
+        <SignUpAccBox data = {data} centerroot={"gd"} onClose={handleCloseSignUpBox} />
       ) : null}
 
       <GDFilterComponent
@@ -692,7 +724,7 @@ export default function GD_Account() {
                 order={order}
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
-                rowCount={filteredRowCount}
+                rowCount={rows.length}
               />
               <TableBody>
                 {visibleRows
@@ -756,7 +788,7 @@ export default function GD_Account() {
             rowsPerPageOptions={[15]}
             component="div"
             count={
-              filteredRowCount <= rows.length ? filteredRowCount : rows.length
+              filteredRowCount ? filteredRowCount : rows.length
             }
             rowsPerPage={rowsPerPage}
             page={page}
@@ -809,6 +841,7 @@ export default function GD_Account() {
             id="username"
             fullWidth
             defaultValue={selectedRow ? selectedRow.username : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -822,7 +855,7 @@ export default function GD_Account() {
             label="Ngày sinh"
             id="dob"
             fullWidth
-            defaultValue={selectedRow ? selectedRow.dob : ""}
+            defaultValue={selectedRow ? changeDateForm2(selectedRow.dob) : ""}
           />
           <TextField
             margin="dense"
@@ -837,6 +870,7 @@ export default function GD_Account() {
             id="email"
             fullWidth
             defaultValue={selectedRow ? selectedRow.email : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -851,6 +885,7 @@ export default function GD_Account() {
             id="password"
             fullWidth
             defaultValue={selectedRow ? selectedRow.password : ""}
+            disabled
           />
         </DialogContent>
         <DialogActions>
@@ -861,13 +896,10 @@ export default function GD_Account() {
             onClick={() => {
               // Lấy dữ liệu mới từ các trường TextField
               const updatedRowData = {
-                username: document.getElementById("username").value,
                 name: document.getElementById("name").value,
                 dob: document.getElementById("dob").value,
                 sex: document.getElementById("sex").value,
-                email: document.getElementById("email").value,
                 phone: document.getElementById("phone").value,
-                password: document.getElementById("password").value,
               };
               handleUpdateConfirm(updatedRowData);
             }}

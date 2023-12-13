@@ -22,14 +22,15 @@ import {
   IconButton,
 } from "@mui/material";
 
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { visuallyHidden } from "@mui/utils";
 import DetailBox from "../DetailBox";
 import TKFilterComponent from "../Filter/TK_system";
 import { FaEye } from "react-icons/fa";
 import SignUpSysBox from "../Box/SignUpSysBox";
 import Buttonme from "../Buttonme/Buttonme";
+import { deleteDataFromFireStoreAndDexie, dexieDB, syncDexieToFirestore, updateDataFromFireStoreAndDexie } from "../../database/cache";
 
 const columns = [
   {
@@ -79,6 +80,15 @@ const columns = [
   },
 ];
 
+const changeDateForm = (date) => {
+  if (typeof date === "string") {
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+  } else {
+    return ""; 
+  }
+};
+
 function createData(id, name, manage, hotline, email, address, setDay) {
   return {
     id,
@@ -87,211 +97,31 @@ function createData(id, name, manage, hotline, email, address, setDay) {
     hotline,
     email,
     address,
-    setDay,
+    setDay : changeDateForm(setDay),
   };
 }
 
-const data = [
-  createData(
-    "UET",
-    "Dai hoc cong nghe",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "137Đ.Phú Mỹ,Mỹ Đình2,NamTừLiêm,Hà Nội",
-    "08/11/2023"
-  ),
-  createData(
-    "ULIS",
-    "Dai hoc ngoai ngu",
-    "Baba",
-    "086880913",
-    "cn2@gmail.com",
-    "137 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "09/11/2023"
-  ),
-  createData(
-    "UEB",
-    "Kinh te",
-    "Baba",
-    "0868809174",
-    "cn8@gmail.com",
-    "138 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "10/11/2023"
-  ),
-  createData(
-    "UED",
-    "Giao duc",
-    "Baba",
-    "0868809175",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Cầu Giấy, Hà Nội",
-    "11/11/2023"
-  ),
-  createData(
-    "IS",
-    "Quoc te",
-    "Baba",
-    "0868809178",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "12/11/2023"
-  ),
-  createData(
-    "UMP",
-    "Y duoc",
-    "Baba",
-    "0868809189",
-    "cn6@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/10/2023"
-  ),
-  createData(
-    "USSH",
-    "Nhan van",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/09/2023"
-  ),
-  createData(
-    "HUS",
-    "Khoa hoc tu nhien",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "20/11/2023"
-  ),
-  createData(
-    "TMU",
-    "Thuong mai",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "17/11/2022"
-  ),
-  createData(
-    "NEU",
-    "Kinh te quoc dan",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/11/2022"
-  ),
-  createData(
-    "HUST",
-    "Bach khoa HN",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/11/2021"
-  ),
-  createData(
-    "FTU",
-    "Ngoai thuong",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/02/2020"
-  ),
-  createData(
-    "UEH",
-    "Bla Bla",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "11/02/2023"
-  ),
-  createData(
-    "VNU",
-    "Dai hoc quoc gia",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "24/12/2022"
-  ),
-  createData(
-    "HAHAHA",
-    "Bla Blaaaa",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "07/04/2023"
-  ),
-  createData(
-    "HEHEHE",
-    "Hehehee",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "01/11/2023"
-  ),
-  createData(
-    "HIHIHI",
-    "Hihihii",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "03/11/2020"
-  ),
-  createData(
-    "BLA BLA",
-    "Kakakaa",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "02/05/2023"
-  ),
-  createData(
-    "GUIJ",
-    "Ahhuih",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "21/04/2023"
-  ),
-  createData(
-    "TYI",
-    "Eowwo",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "05/11/2023"
-  ),
-  createData(
-    "MIT",
-    "Awwww",
-    "Baba",
-    "0868809172",
-    "cn1@gmail.com",
-    "136 Đ. Phú Mỹ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-    "08/11/2023"
-  ),
-];
-
-export function getDataTksys() {
-  return data;
-}
-
-export default function TK_Table() {
+export default function TK_Table({ data, gdData }) {
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "id";
   const DEFAULT_ROWS_PER_PAGE = 6;
-  const [rows, setRows] = useState(data);
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    if (data) {
+      const newRows = data.map((item) =>
+        createData(
+          item.id,
+          item.name,
+          item.manage,
+          item.hotline,
+          item.email,
+          item.address,
+          item.setDay
+        )
+      );
+      setRows(newRows);
+    }
+  }, [data]);
 
   // Sort
   function descendingComparator(a, b, orderBy) {
@@ -415,7 +245,6 @@ export default function TK_Table() {
     coverArea: "",
     TKpoint: "",
   });
-  const [selectedChangeRow, setSelectedChangeRow] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
   const [IsSignUpBoxVisible, setIsSignUpBoxVisible] = useState(false);
@@ -425,31 +254,25 @@ export default function TK_Table() {
   };
 
   const handleDeleteClick = (row) => {
-    setSelectedChangeRow(row);
+    setSelectedRow(row);
     setDeleteDialogOpen(true);
   };
 
   const handleUpdateClick = (row) => {
-    setSelectedChangeRow(row);
+    setSelectedRow(row);
     setUpdateDialogOpen(true);
   };
 
   const handleDeleteConfirm = () => {
-    setRows((prevRows) =>
-      prevRows.filter((row) => row.id !== selectedChangeRow.id)
-    );
+    deleteDataFromFireStoreAndDexie("TKsystem", selectedRow.id);
     setDeleteDialogOpen(false);
-    setSelectedChangeRow(null);
+    setSelectedRow(null);
   };
 
   const handleUpdateConfirm = (updatedRowData) => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === selectedChangeRow.id ? { ...row, ...updatedRowData } : row
-      )
-    );
+    updateDataFromFireStoreAndDexie("TKsystem", selectedRow.id, updatedRowData)
     setUpdateDialogOpen(false);
-    setSelectedChangeRow(null);
+    setSelectedRow(null);
   };
 
   const handleFilterChange = (filterName, value) => {
@@ -473,8 +296,10 @@ export default function TK_Table() {
           : true)
       );
     });
-    const filteredRowCount = filteredData.length; // Số hàng phù hợp với bộ lọc
-    setFilteredRowCount(filteredRowCount); // Cập nhật filteredRowCount
+
+    if (filteredData !== 0) {
+      setFilteredRowCount(filteredData.length);
+    }
     return filteredData;
   };
 
@@ -575,7 +400,10 @@ export default function TK_Table() {
 
   const handleChangeRowsPerPage = useCallback(
     (event) => {
-      const updatedRowsPerPage = parseInt(event.target.value, DEFAULT_ROWS_PER_PAGE);
+      const updatedRowsPerPage = parseInt(
+        event.target.value,
+        DEFAULT_ROWS_PER_PAGE
+      );
       setRowsPerPage(updatedRowsPerPage);
 
       setPage(0);
@@ -613,7 +441,7 @@ export default function TK_Table() {
 
       {IsSignUpBoxVisible ? (
         <SignUpSysBox
-          data={rows}
+          data={data}
           centerroot={"tk"}
           onClose={handleCloseSignUpBox}
         />
@@ -672,15 +500,15 @@ export default function TK_Table() {
                             <Button
                               onClick={() => handleRowClick(row)}
                               key={row.id}
-                              style={{ color: 'green' }}
+                              style={{ color: "green" }}
                             >
                               <FaEye size={20} />
                             </Button>
                           </TableCell>
                           <TableCell>
-                          <IconButton
+                            <IconButton
                               onClick={() => handleUpdateClick(row)}
-                              style={{ color: 'green' }}
+                              style={{ color: "green" }}
                             >
                               <EditIcon />
                             </IconButton>
@@ -710,17 +538,20 @@ export default function TK_Table() {
           <TablePagination
             rowsPerPageOptions={[15]}
             component="div"
-            count={filteredRowCount}
+            count={filteredRowCount ? filteredRowCount : rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-          <DetailBox
-            row={selectedRow}
-            isOpen={isDetailBoxVisible}
-            onClose={handleCloseDetailBox}
-          />
+          {isDetailBoxVisible && (
+            <DetailBox
+              GD={gdData}
+              row={selectedRow}
+              isOpen={isDetailBoxVisible}
+              onClose={handleCloseDetailBox}
+            />
+          )}
         </Paper>
       </Box>
       <Dialog
@@ -758,7 +589,7 @@ export default function TK_Table() {
             label="ID"
             id="id"
             fullWidth
-            defaultValue={selectedChangeRow ? selectedChangeRow.id : ""}
+            defaultValue={selectedRow ? selectedRow.id : ""}
             disabled
           />
           <TextField
@@ -766,42 +597,45 @@ export default function TK_Table() {
             label="Name"
             id="name"
             fullWidth
-            defaultValue={selectedChangeRow ? selectedChangeRow.name : ""}
+            defaultValue={selectedRow ? selectedRow.name : ""}
+            disabled
           />
           <TextField
             margin="dense"
             label="Trưởng điểm TK"
             id="manage"
             fullWidth
-            defaultValue={selectedChangeRow ? selectedChangeRow.manage : ""}
+            defaultValue={selectedRow ? selectedRow.manage : ""}
           />
           <TextField
             margin="dense"
             label="Hotline"
             id="hotline"
             fullWidth
-            defaultValue={selectedChangeRow ? selectedChangeRow.hotline : ""}
+            defaultValue={selectedRow ? selectedRow.hotline : ""}
           />
           <TextField
             margin="dense"
             label="Email"
             id="email"
             fullWidth
-            defaultValue={selectedChangeRow ? selectedChangeRow.email : ""}
+            defaultValue={selectedRow ? selectedRow.email : ""}
+            disabled
           />
           <TextField
             margin="dense"
             label="Địa chỉ"
             id="address"
             fullWidth
-            defaultValue={selectedChangeRow ? selectedChangeRow.address : ""}
+            defaultValue={selectedRow ? selectedRow.address : ""}
           />
           <TextField
             margin="dense"
             label="Ngày thành lập"
             id="setDay"
             fullWidth
-            defaultValue={selectedChangeRow ? selectedChangeRow.setDay : ""}
+            defaultValue={selectedRow ? selectedRow.setDay : ""}
+            disabled
           />
         </DialogContent>
         <DialogActions>
@@ -812,13 +646,11 @@ export default function TK_Table() {
             onClick={() => {
               // Lấy dữ liệu mới từ các trường TextField
               const updatedRowData = {
-                name: document.getElementById("name").value,
                 manage: document.getElementById("manage").value,
                 hotline: document.getElementById("hotline").value,
-                email: document.getElementById("email").value,
                 address: document.getElementById("address").value,
-                setDay: document.getElementById("setDay").value,
               };
+            
               handleUpdateConfirm(updatedRowData);
             }}
             color="primary"
