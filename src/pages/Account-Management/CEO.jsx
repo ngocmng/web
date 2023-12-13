@@ -10,13 +10,15 @@ import { dexieDB } from "../../database/cache";
 const Account = () => {
   const dataGD = useLiveQuery(() => dexieDB.table("LeadGDacc").toArray());  
   const dataTK = useLiveQuery(() => dexieDB.table("LeadTKacc").toArray());
+  const GDsys = useLiveQuery(() => dexieDB.table("GDsystem").toArray());  
+  const TKsys = useLiveQuery(() => dexieDB.table("TKsystem").toArray());
   const [stateView, setStateView] = useState("GD");
   const switchState = (state) => setStateView(state ? "TK" : "GD");
   const toggleTable = () => {
     return stateView === "GD" ? (
-      <GD_Account data={dataGD}/>
+      <GD_Account data={dataGD} system = {GDsys}/>
     ) : (
-      <TK_Account data={dataTK}/>
+      <TK_Account data={dataTK} system = {TKsys}/>
     );
   };
   return (

@@ -26,7 +26,7 @@ const SignUpSysBox = ({ data, centerroot, onClose }) => {
   const handleSubmit = () => {
     //console.log(data);
     const submit = async () => {
-      const { id, name, manage, hotline, address, setDay, coverArea, TKpoint } =
+      const { name, manage, hotline, address, setDay, coverArea, TKpoint } =
         form;
 
       let lastID = "";
@@ -68,7 +68,6 @@ const SignUpSysBox = ({ data, centerroot, onClose }) => {
       if (centerroot === "gd") {
         if (
           !name ||
-          !manage ||
           !hotline ||
           !address ||
           !setDay ||
@@ -80,7 +79,7 @@ const SignUpSysBox = ({ data, centerroot, onClose }) => {
         }
       }
       if (centerroot === "tk") {
-        if (!name || !manage || !hotline || !address || !setDay) {
+        if (!name || !hotline || !address || !setDay) {
           alert("Vui lòng điền đầy đủ các mục");
           return;
         }

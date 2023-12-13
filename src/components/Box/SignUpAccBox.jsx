@@ -5,8 +5,9 @@ import SignUpForm from "../FormInput/SignUpAccForm";
 import { getDataGDacc } from "../Table/GD_Account";
 import { getDataTKacc } from "../Table/TK_Account";
 import { getDataNVTKacc, getTKpoint } from "../Table/NVTK_Account";
+import { addDataToFireStoreAndDexie, updateDataFromFireStoreAndDexie } from "../../database/cache";
 
-const SignUpAccBox = ({ data, centerroot, onClose }) => {
+const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
   const defaultForm = {
     id: "",
     username: "",
@@ -25,98 +26,129 @@ const SignUpAccBox = ({ data, centerroot, onClose }) => {
 
   const handleSubmit = () => {
     const submit = async () => {
-      const { id, name, center, phone, dob, sex } = form;
-      let user = String("");
+      const { name, center, phone, dob, sex } = form;
+      // let username ="";
+      // let email = "";
+      // let id = "",
 
       if (centerroot === "gd" || centerroot === "tk") {
-        if (!/^\d{2}$/.test(id)) {
-          alert("ID không hợp lệ");
-          return;
+        const System = system.find((item) => item.name === center);
+        if (System) {
+          const username = "Lead" + System.id;
+          const email = System.email;
+          const id = "L" + System.id;
+          const password = "L" + System.id.toLowerCase() + "@magic-post";
+          if (!name || !phone || !dob || !sex || !center) {
+            alert("Vui lòng điền đầy đủ các mục");
+            return;
+          }
+          if (centerroot === "gd") {
+            const form1 = {
+              id: System.id,
+              name: System.name,
+              manage: name,
+              hotline: System.hotline,
+              email: System.email,
+              address: System.address,
+              setDay: System.setDay,
+              coverArea: System.coverArea,
+              TKpoint : System.TKpoint,
+            }
+            const form2 = {
+              id: id,
+              username: username,
+              email: email,
+              password: password,
+              name: name,
+              gd: center,
+              phone: phone,
+              dob: dob,
+              sex: sex,
+            };
+            addDataToFireStoreAndDexie("LeadGDacc", form2);
+            //updateDataFromFireStoreAndDexie(collectionName, id, newData)
+            updateDataFromFireStoreAndDexie("GDsystem", System.id, form1)
+          } else {
+            const form1 = {
+              id: System.id,
+              name: System.name,
+              manage: name,
+              hotline: System.hotline,
+              email: System.email,
+              address: System.address,
+              setDay: System.setDay,
+            }
+            const form2 = {
+              id: id,
+              username: username,
+              email: email,
+              password: password,
+              name: name,
+              tk: center,
+              phone: phone,
+              dob: dob,
+              sex: sex,
+            };
+            addDataToFireStoreAndDexie("LeadTKacc", form2);
+            updateDataFromFireStoreAndDexie("TKsystem", System.id, form1)
+          }
         }
-      } else {
-        if (!/^\d{4}$/.test(id)) {
-          alert("ID không hợp lệ");
-          return;
-        }
+        // if (!/^\d{2}$/.test(id)) {
+        //   alert("ID không hợp lệ");
+        //   return;
+        // }
       }
+      // } else {
+      //   if (!/^\d{4}$/.test(id)) {
+      //     alert("ID không hợp lệ");
+      //     return;
+      //   }
+      // }
 
-      if (centerroot === "gd") {
-        const getGDaccount = getDataGDacc();
-        if (getGDaccount.some((row) => row.id === id)) {
-          alert("ID đã tồn tại");
-          return;
-        }
-        if (
-          getGDaccount.some(
-            (row) => row.gd.toLowerCase() === center.toLowerCase()
-          )
-        ) {
-          alert("Tài khoản trưởng điểm GD này đã tồn tại");
-          return;
-        }
-        user = `LeadGD${id}`;
-      }
+      // if (centerroot === "nvtk") {
+      //   const getNVTKaccount = getDataNVTKacc();
+      //   if (getNVTKaccount.some((row) => row.id === id)) {
+      //     alert("ID đã tồn tại");
+      //     return;
+      //   }
+      //   user = `NVTK${id}`;
+      // }
 
-      if (centerroot === "tk") {
-        const getTKaccount = getDataTKacc();
-        if (getTKaccount.some((row) => row.id === id)) {
-          alert("ID đã tồn tại");
-          return;
-        }
-        if (
-          getTKaccount.some(
-            (row) => row.tk.toLowerCase() === center.toLowerCase()
-          )
-        ) {
-          alert("Tài khoản trưởng điểm TK này đã tồn tại");
-          return;
-        }
-        user = `LeadTK${id}`;
-      }
-      if (centerroot === "nvtk") {
-        const getNVTKaccount = getDataNVTKacc();
-        if (getNVTKaccount.some((row) => row.id === id)) {
-          alert("ID đã tồn tại");
-          return;
-        }
-        user = `NVTK${id}`;
-      }
+      // const username = user;
+      // const email = `${username}@magic-post.com`;
+    //   const password = `MP@${username}`;
+    //   setForm({
+    //     ...form,
+    //     username,
+    //     email,
+    //     password,
+    //   });
+    //   console.log(username);
+    //   console.log(email);
+    //   console.log(password);
 
-      const username = user;
-      const email = `${username}@magic-post.com`;
-      const password = `MP@${username}`;
-      setForm({
-        ...form,
-        username,
-        email,
-        password,
-      });
-      console.log(username);
-      console.log(email);
-      console.log(password);
+    //   if (!name || !phone || !dob || !sex) {
+    //     alert("Vui lòng điền đầy đủ các mục");
+    //     return;
+    //   }
+    //   if ((centerroot === "gd" || centerroot === "tk") && !center) {
+    //     alert("Vui lòng điền đầy đủ các mục");
+    //     return;
+    //   }
 
-      if (!name || !phone || !dob || !sex) {
-        alert("Vui lòng điền đầy đủ các mục");
-        return;
-      }
-      if ((centerroot === "gd" || centerroot === "tk") && !center) {
-        alert("Vui lòng điền đầy đủ các mục");
-        return;
-      }
-
-      if (centerroot === "gd") {
-        alert("Tài khoản trưởng giao dịch đã được thêm thành công");
-        console.log(form);
-      }
-      if (centerroot === "tk") {
-        alert("Tài khoản trưởng tập kết đã được thêm thành công");
-        console.log(form);
-      }
-      if (centerroot === "nvtk") {
-        alert("Tài khoản nhân viên tập kết đã được thêm thành công");
-        console.log(form);
-      }
-    };
+    //   if (centerroot === "gd") {
+    //     alert("Tài khoản trưởng giao dịch đã được thêm thành công");
+    //     console.log(form);
+    //   }
+    //   if (centerroot === "tk") {
+    //     alert("Tài khoản trưởng tập kết đã được thêm thành công");
+    //     console.log(form);
+    //   }
+    //   if (centerroot === "nvtk") {
+    //     alert("Tài khoản nhân viên tập kết đã được thêm thành công");
+    //     console.log(form);
+    //   }
+     };
 
     submit();
   };
@@ -194,6 +226,7 @@ const SignUpAccBox = ({ data, centerroot, onClose }) => {
               })()}
             </Typography>
             <SignUpForm
+              system={system}
               center={centerroot}
               form={form}
               onChange={handleChange}

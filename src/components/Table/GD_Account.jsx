@@ -362,7 +362,7 @@ export function getDataGDacc() {
   return data;
 }
 
-export default function GD_Account({data}) {
+export default function GD_Account({data, system}) {
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "id";
   const DEFAULT_ROWS_PER_PAGE = 6;
@@ -686,7 +686,7 @@ export default function GD_Account({data}) {
         </Grid>
       </div>
       {IsSignUpBoxVisible ? (
-        <SignUpAccBox data = {data} centerroot={"gd"} onClose={handleCloseSignUpBox} />
+        <SignUpAccBox data = {data} system = {system} centerroot={"gd"} onClose={handleCloseSignUpBox} />
       ) : null}
 
       <GDFilterComponent

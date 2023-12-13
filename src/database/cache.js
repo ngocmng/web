@@ -68,6 +68,12 @@ async function addDataToFireStoreAndDexie(collectionName,newData) {
     if (collectionName === "TKsystem") {
       alert("Điểm tập kết đã được thêm thành công");
     }
+    if (collectionName === "LeadGDacc") {
+      alert("Tài khoản trưởng điểm giao dịch đã được thêm thành công");
+    }
+    if (collectionName === "LeadTKacc") {
+      alert("Tài khoản trưởng điểm tập kết đã được thêm thành công");
+    }
   } catch (error) {
     console.error("Loi khi add trong firestore: ", error);
   }

@@ -4,6 +4,8 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import {
   Lock,
@@ -20,7 +22,18 @@ import FormInput from "./FormInput";
 import Buttonme from "../Buttonme/Buttonme";
 import { getTKpoint } from "../Table/NVTK_Account";
 
-export default function SignUpForm({ center, form, onChange, onSubmit }) {
+export default function SignUpForm({
+  system,
+  center,
+  form,
+  onChange,
+  onSubmit,
+}) {
+  //const systemName = [new Set(system.map((item) => item.name))]
+  // const nameArray = GDsys.map(item => item.name);
+  const systemName = system
+    .filter((item) => item.manage === "")
+    .map((item) => item.name);
   return (
     <>
       <Grid container sx={{ height: "90%" }}>
@@ -47,7 +60,9 @@ export default function SignUpForm({ center, form, onChange, onSubmit }) {
               onChange={onChange}
               name="id"
               value={form.id}
+              readOnly
               icon=<Grid3x3 />
+              color="other"
             />
             <FormInput
               label="Họ và Tên*"
@@ -94,25 +109,58 @@ export default function SignUpForm({ center, form, onChange, onSubmit }) {
               icon=<Phone />
             />
             {(center === "gd" || center === "tk") && (
-              <FormInput
+              <>
+                {/* <FormInput
                 label={center === "gd" ? "Điểm giao dịch*" : "Điểm tập kết*"}
                 type="text"
                 onChange={onChange}
                 name="center"
                 value={form.center}
                 icon=<BusinessCenter />
-              />
+              /> */}
+                <Autocomplete
+                  name="center"
+                  value={form.center}
+                  onInputChange={(event, newInputValue) => {
+                    if (systemName.includes(newInputValue)) {
+                      onChange({
+                        target: { name: "center", value: newInputValue },
+                      });
+                    }
+                  }}
+                  options={systemName}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={
+                        center === "gd" ? "Điểm giao dịch*" : "Điểm tập kết*"
+                      }
+                      margin="normal"
+                      variant="outlined"
+                      sx={{
+                        height: "5%",
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            border: "1.5px solid var(--border-color)",
+                          },
+                        },
+                      }}
+                    />
+                  )}
+                  freeSolo
+                />
+              </>
             )}
-            {(center === "nvtk") && (
+            {center === "nvtk" && (
               <FormInput
-              label="Điểm tập kết"
-              type="text"
-              readOnly
-              name="center"
-              value={form.center}
-              icon=<BusinessCenter />
-              color="other"
-            />
+                label="Điểm tập kết"
+                type="text"
+                readOnly
+                name="center"
+                value={form.center}
+                icon=<BusinessCenter />
+                color="other"
+              />
             )}
           </Stack>
           {/* <Buttonme content="Tạo mới" onClick={onSubmit} /> */}

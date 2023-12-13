@@ -365,7 +365,7 @@ export function getDataTKacc() {
   return data;
 }
 
-export default function TK_Account({data}) {
+export default function TK_Account({data, system}) {
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "id";
   const DEFAULT_ROWS_PER_PAGE = 6;
@@ -693,7 +693,7 @@ function descendingComparator(a, b, orderBy) {
           />
         </Grid>
       </div>
-      {IsSignUpBoxVisible ? <SignUpAccBox data = {data} centerroot = {"tk"} onClose={handleCloseSignUpBox} /> : null}
+      {IsSignUpBoxVisible ? <SignUpAccBox data = {data} system={system} centerroot = {"tk"} onClose={handleCloseSignUpBox} /> : null}
 
       <TKFilterComponent
         filters={filters}

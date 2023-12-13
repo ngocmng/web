@@ -72,12 +72,14 @@ export default function SignUpForm({
               icon=<BusinessCenter />
             />
             <FormInput
-              label={center === "gd" ? " Trưởng điểm GD*" : "Trưởng điểm TK*"}
+              label={center === "gd" ? " Trưởng điểm GD" : "Trưởng điểm TK"}
               type="text"
               onChange={onChange}
               name="manage"
               value={form.manage}
+              readOnly
               icon=<Badge />
+              color = "other"
             />
             <FormInput
               label="Hotline*"
