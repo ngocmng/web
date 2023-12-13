@@ -5,14 +5,17 @@ import SignUpForm from "../FormInput/SignUpAccForm";
 import { getDataGDacc } from "../Table/GD_Account";
 import { getDataTKacc } from "../Table/TK_Account";
 import { getDataNVTKacc, getTKpoint } from "../Table/NVTK_Account";
-import { addDataToFireStoreAndDexie, updateDataFromFireStoreAndDexie } from "../../database/cache";
+import {
+  addDataToFireStoreAndDexie,
+  updateDataFromFireStoreAndDexie,
+} from "../../database/cache";
 
 const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
   const defaultForm = {
     id: "",
     username: "",
     name: "",
-    center: centerroot === "nvtk" ? getTKpoint() : "",
+    center: centerroot === "nvtk" ? data[0].tk : "",
     dob: "",
     sex: "",
     email: "",
@@ -52,8 +55,8 @@ const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
               address: System.address,
               setDay: System.setDay,
               coverArea: System.coverArea,
-              TKpoint : System.TKpoint,
-            }
+              TKpoint: System.TKpoint,
+            };
             const form2 = {
               id: id,
               username: username,
@@ -67,7 +70,7 @@ const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
             };
             addDataToFireStoreAndDexie("LeadGDacc", form2);
             //updateDataFromFireStoreAndDexie(collectionName, id, newData)
-            updateDataFromFireStoreAndDexie("GDsystem", System.id, form1)
+            updateDataFromFireStoreAndDexie("GDsystem", System.id, form1);
           } else {
             const form1 = {
               id: System.id,
@@ -77,7 +80,7 @@ const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
               email: System.email,
               address: System.address,
               setDay: System.setDay,
-            }
+            };
             const form2 = {
               id: id,
               username: username,
@@ -90,65 +93,38 @@ const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
               sex: sex,
             };
             addDataToFireStoreAndDexie("LeadTKacc", form2);
-            updateDataFromFireStoreAndDexie("TKsystem", System.id, form1)
+            updateDataFromFireStoreAndDexie("TKsystem", System.id, form1);
           }
         }
-        // if (!/^\d{2}$/.test(id)) {
-        //   alert("ID không hợp lệ");
-        //   return;
-        // }
-      }
-      // } else {
-      //   if (!/^\d{4}$/.test(id)) {
-      //     alert("ID không hợp lệ");
-      //     return;
-      //   }
-      // }
-
-      // if (centerroot === "nvtk") {
-      //   const getNVTKaccount = getDataNVTKacc();
-      //   if (getNVTKaccount.some((row) => row.id === id)) {
-      //     alert("ID đã tồn tại");
-      //     return;
-      //   }
-      //   user = `NVTK${id}`;
-      // }
-
-      // const username = user;
-      // const email = `${username}@magic-post.com`;
-    //   const password = `MP@${username}`;
-    //   setForm({
-    //     ...form,
-    //     username,
-    //     email,
-    //     password,
-    //   });
-    //   console.log(username);
-    //   console.log(email);
-    //   console.log(password);
-
-    //   if (!name || !phone || !dob || !sex) {
-    //     alert("Vui lòng điền đầy đủ các mục");
-    //     return;
-    //   }
-    //   if ((centerroot === "gd" || centerroot === "tk") && !center) {
-    //     alert("Vui lòng điền đầy đủ các mục");
-    //     return;
-    //   }
-
-    //   if (centerroot === "gd") {
-    //     alert("Tài khoản trưởng giao dịch đã được thêm thành công");
-    //     console.log(form);
-    //   }
-    //   if (centerroot === "tk") {
-    //     alert("Tài khoản trưởng tập kết đã được thêm thành công");
-    //     console.log(form);
-    //   }
-    //   if (centerroot === "nvtk") {
-    //     alert("Tài khoản nhân viên tập kết đã được thêm thành công");
-    //     console.log(form);
-    //   }
-     };
+      } else if (centerroot === "nvtk") {
+        let lastID = "";
+        data.forEach((item) => {
+          const currentID = item.id;
+          const currentNumber = parseInt(currentID.substring(2));
+          lastID = `TK${(currentNumber + 1).toString().padStart(5, "0")}`;
+        });
+        const username = "staff" + lastID;
+        const email = lastID + "@magic-post.com";
+        const id = lastID;
+        const password = "MG@" + username;
+        if (!name || !phone || !dob || !sex) {
+          alert("Vui lòng điền đầy đủ các mục");
+          return;
+        }
+          const form1 = {
+            id: id,
+            name: name,
+            username: username,
+            tk: center,
+            dob: dob,
+            sex: sex,
+            email: email,
+            phone: phone,
+            password: password,
+          }
+          addDataToFireStoreAndDexie("NVTKacc", form1);
+        } 
+    };
 
     submit();
   };

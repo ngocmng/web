@@ -51,7 +51,9 @@ import {
                 onChange={onChange}
                 name="id"
                 value={form.id}
+                readOnly
                 icon=<Grid3x3 />
+                color = "other"
               />
               <FormInput
                 label="Họ và Tên*"

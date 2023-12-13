@@ -1,9 +1,19 @@
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import Page from "../../components/Page";
 import NVTK_Account from "../../components/Table/NVTK_Account";
+import { useLiveQuery } from "dexie-react-hooks";
+import { dexieDB } from "../../database/cache";
 
 const HeadTKAccount = () => {
-  
+  const id = localStorage.getItem("id").slice(1);
+  const dataNVTK = useLiveQuery(() =>
+    dexieDB
+      .table("NVTKacc")
+      .filter((item) => item.id.startsWith(id))
+      .toArray()
+  );
+  // console.log(id);
+  // console.log(dataNVTK);
   return (
     <Page>
       <Grid container justifyContent="center" spacing={0} height={1}>
@@ -43,9 +53,8 @@ const HeadTKAccount = () => {
                 alignItems="center"
                 sx={{
                   // bgcolor: "var(--background-color)",
-                  padding: "10px"
+                  padding: "10px",
                 }}
-                
               >
                 <Typography
                   sx={{
@@ -61,11 +70,11 @@ const HeadTKAccount = () => {
                     zIndex: 1,
                   }}
                 >
-                    Quản lý tài khoản nhân viên điểm tập kết
+                  Quản lý tài khoản nhân viên điểm tập kết {localStorage.getItem("center")}
                 </Typography>
               </Stack>
             </Box>
-            <NVTK_Account/>
+            <NVTK_Account data={dataNVTK} />
           </Stack>
         </Grid>
       </Grid>

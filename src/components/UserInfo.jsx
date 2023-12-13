@@ -1,13 +1,12 @@
 import { Stack, Button } from "@mui/material";
-import { Logout, Email, Phone, Business } from "@mui/icons-material";
+import { Logout, Email, Phone, Badge } from "@mui/icons-material";
 import { Sheet, Box, ModalClose, Typography, Modal } from "@mui/joy";
 
 import { useNavigate } from "react-router";
 
 const UserInfo = ({ open, close }) => {
   const navigate = useNavigate();
-  //   const id = localStorage.getItem("id");
-  const id = "ceo";
+  const id = localStorage.getItem("id").slice(0,3);
 
   return (
     <Modal
@@ -20,7 +19,12 @@ const UserInfo = ({ open, close }) => {
       <Sheet
         variant="outlined"
         sx={{
-          maxWidth: 500,
+          width: {
+            xs: "60%",
+            lg: "30%",
+            md: "35%",
+            sm: "50%",
+          },
           borderRadius: "md",
           p: 3,
           pb: 1,
@@ -48,11 +52,13 @@ const UserInfo = ({ open, close }) => {
             color: "var(--title-color)",
           }}
         >
-          {id === "ceo"
-            ? "Lãnh đạo"
-            : id === "gd"
-            ? "Điểm giao dịch"
-            : "Điểm tập kết"}
+          {id === "CEO"
+            ? "Lãnh đạo " 
+            : id === "LGD"
+            ? "Điểm giao dịch "
+            : "Điểm tập kết "}
+            <br/>
+            {localStorage.getItem("center")}
         </Typography>
         <Stack
           height={"40vh"}
@@ -66,6 +72,18 @@ const UserInfo = ({ open, close }) => {
         >
           <Typography
             id="modal-desc"
+            startDecorator={<Badge />}
+            sx={{
+              fontFamily: "var(--font-inter)",
+              fontWeight: "bold",
+              color: "var(--font2-color)",
+            }}
+          >
+            Người phụ trách: {localStorage.getItem("name")}
+          </Typography>
+
+          <Typography
+            id="modal-desc"
             startDecorator={<Email />}
             sx={{
               fontFamily: "var(--font-inter)",
@@ -73,7 +91,7 @@ const UserInfo = ({ open, close }) => {
               color: "var(--font2-color)",
             }}
           >
-            Email: giang123@gmail.com
+            Email: {localStorage.getItem("email")}
           </Typography>
           <Typography
             id="modal-desc"
@@ -84,18 +102,7 @@ const UserInfo = ({ open, close }) => {
             }}
             startDecorator={<Phone />}
           >
-            Số điện thoại: 0123456789
-          </Typography>
-          <Typography
-            id="modal-desc"
-            sx={{
-              fontFamily: "var(--font-inter)",
-              fontWeight: "bold",
-              color: "var(--font2-color)",
-            }}
-            startDecorator={<Business />}
-          >
-            Địa chỉ: 144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội
+            Số điện thoại: {localStorage.getItem("phone")}
           </Typography>
           <Box
             width={"110%"}

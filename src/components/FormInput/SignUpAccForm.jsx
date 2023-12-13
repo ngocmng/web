@@ -31,9 +31,12 @@ export default function SignUpForm({
 }) {
   //const systemName = [new Set(system.map((item) => item.name))]
   // const nameArray = GDsys.map(item => item.name);
-  const systemName = system
-    .filter((item) => item.manage === "")
-    .map((item) => item.name);
+  let systemName;
+  if (system) {
+    systemName = system
+      .filter((item) => item.manage === "")
+      .map((item) => item.name);
+  }
   return (
     <>
       <Grid container sx={{ height: "90%" }}>

@@ -15,7 +15,7 @@ import SignIn from "./components/Test/SignIn";
 import { useEffect } from "react";
 import { dexieDB } from "./database/cache";
 import { collection, onSnapshot } from "firebase/firestore";
-import { fireDB } from "./database/firebase";
+import { fireAuth, fireDB } from "./database/firebase";
 
 const App = () => {
   const logPackageDataFromDexieDB = async () => {
@@ -119,10 +119,56 @@ const App = () => {
     return () => listener();
   }, []);
 
+  useEffect(() => {
+    const listener = onSnapshot(collection(fireDB, "NVTKacc"), (snapshot) => {
+      snapshot.docChanges().forEach(async (system) => {
+        const systemDoc = system.doc;
+        const systemData = systemDoc.data();
+        await dexieDB.table("NVTKacc").put({
+              id: systemData.id,
+              username: systemData.username,
+              name: systemData.name,
+              tk : systemData.tk,
+              dob: systemData.dob,
+              sex: systemData.sex,
+              email : systemData.email,
+              phone: systemData.phone,
+              password: systemData.password
+            });
+        return;
+      });
+      logPackageDataFromDexieDB();
+    });
+    return () => listener();
+  }, []);
+
+  useEffect(() => {
+    const listener = onSnapshot(collection(fireDB, "GDVacc"), (snapshot) => {
+      snapshot.docChanges().forEach(async (system) => {
+        const systemDoc = system.doc;
+        const systemData = systemDoc.data();
+        await dexieDB.table("GDVacc").put({
+              id: systemData.id,
+              username: systemData.username,
+              name: systemData.name,
+              gd : systemData.gd,
+              dob: systemData.dob,
+              sex: systemData.sex,
+              email : systemData.email,
+              phone: systemData.phone,
+              password: systemData.password
+            });
+        return;
+      });
+      //logPackageDataFromDexieDB();
+    });
+    return () => listener();
+  }, []);
+
 
   const navigate = useNavigate();
   const onSignIn = () => navigate("/home");
-  const id = localStorage.getItem("id");
+  const id = localStorage.getItem("id").slice(0,3);
   return (
     <>
       <div className="App">
@@ -134,15 +180,15 @@ const App = () => {
           <Route
             path="/home"
             element={
-              id === "ceo" ? <HomeCEO /> : id === "gd" ? <HomeGD /> : <HomeTK />
+              id === "CEO" ? <HomeCEO /> : id === "LGD" ? <HomeGD /> : <HomeTK />
             }
           />
           <Route
             path="/statistic"
             element={
-              id === "ceo" ? (
+              id === "CEO" ? (
                 <StatisticCEO />
-              ) : id === "gd" ? (
+              ) : id === "LGD" ? (
                 <StatisticGD />
               ) : (
                 <StatisticTK />
@@ -152,15 +198,15 @@ const App = () => {
           <Route
             path="/system"
             element={
-              id === "ceo" ? <System /> : id === "gd" ? <HomeGD /> : <HomeTK />
+              id === "CEO" ? <System /> : id === "LGD" ? <HomeGD /> : <HomeTK />
             }
           />
           <Route
             path="/account"
             element={
-              id === "ceo" ? (
+              id === "CEO" ? (
                 <Account />
-              ) : id === "gd" ? (
+              ) : id === "LGD" ? (
                 <HeadGDAccount />
               ) : (
                 <HeadTKAccount />

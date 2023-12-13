@@ -31,6 +31,7 @@ import { visuallyHidden } from "@mui/utils";
 import NVTKFilterComponent from "../Filter/NVTK_account";
 import SignUpBox from "../Box/SignUpAccBox";
 import Buttonme from "../Buttonme/Buttonme";
+import { deleteDataFromFireStoreAndDexie, updateDataFromFireStoreAndDexie } from "../../database/cache";
 
 const columns = [
   {
@@ -92,15 +93,33 @@ const columns = [
   },
 ];
 
-const tkpoint = "UET";
+const changeDateForm = (date) => {
+  if (typeof date === "string") {
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+  } else {
+    return ""; 
+  }
+};
+
+const changeDateForm2 = (date) => {
+  if (typeof date === "string") {
+    const [day, month, year] = date.split("/");
+    return `${year}-${month}-${day}`;
+  } else {
+    return ""; 
+  }
+};
+
+// const tkpoint = "UET";
 
 function createData(id, username, name, tk, dob, sex, email, phone, password) {
   return {
     id,
     username,
     name,
-    tk:tkpoint,
-    dob,
+    tk,
+    dob: changeDateForm(dob),
     sex,
     email,
     phone,
@@ -108,233 +127,252 @@ function createData(id, username, name, tk, dob, sex, email, phone, password) {
   };
 }
 
-const data = [
-  createData(
-    "1",
-    "utk1",
-    "Trần Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "2",
-    "utk2",
-    "aTrần Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "3",
-    "utk3",
-    "bTrần Dang",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "4",
-    "utk4",
-    "cTrần Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "5",
-    "utk5",
-    "Trần Dang",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "6",
-    "utk6",
-    "dTrần Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "7",
-    "utk7",
-    "eTrần Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "8",
-    "utk8",
-    "dTrần Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "9",
-    "utk9",
-    "kTrần Dang",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "9",
-    "utk9",
-    "Tutkrần Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "10",
-    "utk10",
-    "oTutkrần Dang",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "11",
-    "utk11",
-    "Tutkrần kDang",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "12",
-    "utk12",
-    "Tutkrầng Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "13",
-    "utk13",
-    "Tutkrầng Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "14",
-    "utk14",
-    "Tutkrầng Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "15",
-    "utk15",
-    "Tutkrầng Dang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "16",
-    "utk16",
-    "Tutkrầng gbDang",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "17",
-    "utk17",
-    "Tutkrầng Danhg",
-    "26/08/2003",
-    "Nữ",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "18",
-    "utk18",
-    "Tutkrầng Dang",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "19",
-    "utk19",
-    "Tutkrầng Dang",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-  createData(
-    "20",
-    "utk20",
-    "Tutkrầng Dang",
-    "26/08/2003",
-    "Nam",
-    "bhnj@gmail.com",
-    "012345678",
-    "dang1234"
-  ),
-];
+// const data = [
+//   createData(
+//     "1",
+//     "utk1",
+//     "Trần Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "2",
+//     "utk2",
+//     "aTrần Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "3",
+//     "utk3",
+//     "bTrần Dang",
+//     "26/08/2003",
+//     "Nam",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "4",
+//     "utk4",
+//     "cTrần Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "5",
+//     "utk5",
+//     "Trần Dang",
+//     "26/08/2003",
+//     "Nam",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "6",
+//     "utk6",
+//     "dTrần Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "7",
+//     "utk7",
+//     "eTrần Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "8",
+//     "utk8",
+//     "dTrần Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "9",
+//     "utk9",
+//     "kTrần Dang",
+//     "26/08/2003",
+//     "Nam",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "9",
+//     "utk9",
+//     "Tutkrần Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "10",
+//     "utk10",
+//     "oTutkrần Dang",
+//     "26/08/2003",
+//     "Nam",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "11",
+//     "utk11",
+//     "Tutkrần kDang",
+//     "26/08/2003",
+//     "Nam",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "12",
+//     "utk12",
+//     "Tutkrầng Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "13",
+//     "utk13",
+//     "Tutkrầng Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "14",
+//     "utk14",
+//     "Tutkrầng Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "15",
+//     "utk15",
+//     "Tutkrầng Dang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "16",
+//     "utk16",
+//     "Tutkrầng gbDang",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "17",
+//     "utk17",
+//     "Tutkrầng Danhg",
+//     "26/08/2003",
+//     "Nữ",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "18",
+//     "utk18",
+//     "Tutkrầng Dang",
+//     "26/08/2003",
+//     "Nam",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "19",
+//     "utk19",
+//     "Tutkrầng Dang",
+//     "26/08/2003",
+//     "Nam",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+//   createData(
+//     "20",
+//     "utk20",
+//     "Tutkrầng Dang",
+//     "26/08/2003",
+//     "Nam",
+//     "bhnj@gmail.com",
+//     "012345678",
+//     "dang1234"
+//   ),
+// ];
 
-export function getDataNVTKacc() {
-  return data;
-}
+// export function getDataNVTKacc() {
+//   return data;
+// }
 
 export function getTKpoint() {
-  return tkpoint;
+  return "UET";
 }
 
-export default function NVTK_Account() {
+export default function NVTK_Account({data}) {
+  //console.log(data);
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "id";
   const DEFAULT_ROWS_PER_PAGE = 5;
-  const [rows, setRows] = useState(data);
+  const [rows, setRows] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
+  useEffect(() => {
+    if (data) {
+      const newRows = data.map((item) =>
+        createData(
+          item.id,
+          item.username,
+          item.name,
+          item.tk,
+          item.dob,
+          item.sex,
+          item.email,
+          item.phone,
+          item.password,
+        )
+      );
+      setRows(newRows);
+    }
+  }, [data]);
 
   // Sort
 function descendingComparator(a, b, orderBy) {
@@ -475,19 +513,13 @@ function descendingComparator(a, b, orderBy) {
   };
 
   const handleDeleteConfirm = () => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== selectedRow.id));
-    alert("Xóa tài khoản thành công!");
+    deleteDataFromFireStoreAndDexie("NVTKacc", selectedRow.id);
     setDeleteDialogOpen(false);
     setSelectedRow(null);
   };
 
   const handleUpdateConfirm = (updatedRowData) => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === selectedRow.id ? { ...row, ...updatedRowData } : row
-      )
-    );
-    alert("Cập nhật thông tin thành công!");
+    updateDataFromFireStoreAndDexie("NVTKacc", selectedRow.id, updatedRowData)
     setUpdateDialogOpen(false);
     setSelectedRow(null);
   };
@@ -518,8 +550,9 @@ function descendingComparator(a, b, orderBy) {
           : true)
       );
     });
-    const filteredRowCount = filteredData.length; // Số hàng phù hợp với bộ lọc
-    setFilteredRowCount(filteredRowCount); // Cập nhật filteredRowCount
+    if (filteredData !== 0) {
+      setFilteredRowCount(filteredData.length);
+    }
     return filteredData;
   };
 
@@ -616,8 +649,6 @@ function descendingComparator(a, b, orderBy) {
       );
 
       setVisibleRows(updatedRows);
-
-      // There is no layout jump to handle on the first page.
       setPaddingHeight(0);
     },
     [order, orderBy, rows]
@@ -639,7 +670,7 @@ function descendingComparator(a, b, orderBy) {
           />
         </Grid>
       </div>
-      {IsSignUpBoxVisible ? <SignUpBox centerroot = {"nvtk"} onClose={handleCloseSignUpBox} /> : null}
+      {IsSignUpBoxVisible ? <SignUpBox data = {data} centerroot = {"nvtk"} onClose={handleCloseSignUpBox} /> : null}
 
       <NVTKFilterComponent
         filters={filters}
@@ -740,7 +771,7 @@ function descendingComparator(a, b, orderBy) {
           <TablePagination
             rowsPerPageOptions={[15]}
             component="div"
-            count={filteredRowCount <= rows.length? filteredRowCount: rows.length}
+            count={filteredRowCount ? filteredRowCount : rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -792,6 +823,7 @@ function descendingComparator(a, b, orderBy) {
             id="username"
             fullWidth
             defaultValue={selectedRow ? selectedRow.username : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -805,7 +837,7 @@ function descendingComparator(a, b, orderBy) {
             label="Ngày sinh"
             id="dob"
             fullWidth
-            defaultValue={selectedRow ? selectedRow.dob : ""}
+            defaultValue={selectedRow ? changeDateForm2(selectedRow.dob) : ""}
           />
           <TextField
             margin="dense"
@@ -820,6 +852,7 @@ function descendingComparator(a, b, orderBy) {
             id="email"
             fullWidth
             defaultValue={selectedRow ? selectedRow.email : ""}
+            disabled
           />
           <TextField
             margin="dense"
@@ -827,13 +860,6 @@ function descendingComparator(a, b, orderBy) {
             id="phone"
             fullWidth
             defaultValue={selectedRow ? selectedRow.phone : ""}
-          />
-          <TextField
-            margin="dense"
-            label="Password"
-            id="password"
-            fullWidth
-            defaultValue={selectedRow ? selectedRow.password : ""}
           />
         </DialogContent>
         <DialogActions>
@@ -844,13 +870,10 @@ function descendingComparator(a, b, orderBy) {
             onClick={() => {
               // Lấy dữ liệu mới từ các trường TextField
               const updatedRowData = {
-                username: document.getElementById("username").value,
                 name: document.getElementById("name").value,
                 dob: document.getElementById("dob").value,
                 sex: document.getElementById("sex").value,
-                email: document.getElementById("email").value,
                 phone: document.getElementById("phone").value,
-                password: document.getElementById("password").value,
               };
               handleUpdateConfirm(updatedRowData);
             }}

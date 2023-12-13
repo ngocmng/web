@@ -1,8 +1,15 @@
 import Dexie from "dexie";
 import { fireDB } from "./firebase";
-import { doc, setDoc, collection, deleteDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  collection,
+  deleteDoc,
+  updateDoc,
+  getDoc,
+} from "firebase/firestore";
 
-const dexieDB = new Dexie("cachedUser12");
+const dexieDB = new Dexie("cachedUser16");
 dexieDB.version(1).stores({
   users: "id, name",
   package: "id",
@@ -10,6 +17,8 @@ dexieDB.version(1).stores({
   TKsystem: "id",
   LeadGDacc: "id",
   LeadTKacc: "id",
+  NVTKacc: "id",
+  GDVacc: "id",
 });
 
 async function deleteDataFromFireStoreAndDexie(collectionName, id) {
@@ -25,16 +34,16 @@ async function deleteDataFromFireStoreAndDexie(collectionName, id) {
 
 async function deleteDataFromDexieTable(tableName, id) {
   dexieDB
-      .table(tableName)
-      .where("id")
-      .equals(id)
-      .delete()
-      .then(() => {
-        console.log("xoa trong dexieDB");
-      })
-      .catch((error) => {
-        console.error("Loi khi xoa data dexieDB", error);
-      });
+    .table(tableName)
+    .where("id")
+    .equals(id)
+    .delete()
+    .then(() => {
+      console.log("xoa trong dexieDB");
+    })
+    .catch((error) => {
+      console.error("Loi khi xoa data dexieDB", error);
+    });
 }
 
 async function updateDataFromFireStoreAndDexie(collectionName, id, newData) {
@@ -49,15 +58,15 @@ async function updateDataFromFireStoreAndDexie(collectionName, id, newData) {
 }
 
 async function updateDataFromDexieTable(tableName, id, newData) {
-      try {
-        await dexieDB.table(tableName).update(id, newData);
-        console.log("update dexieDB");
-      } catch (error) {
-        console.error("Loi khi update data dexieDB", error);
-      }
+  try {
+    await dexieDB.table(tableName).update(id, newData);
+    console.log("update dexieDB");
+  } catch (error) {
+    console.error("Loi khi update data dexieDB", error);
+  }
 }
 
-async function addDataToFireStoreAndDexie(collectionName,newData) {
+async function addDataToFireStoreAndDexie(collectionName, newData) {
   try {
     const docRef = doc(fireDB, collectionName, newData.id);
     await setDoc(docRef, newData);
@@ -74,18 +83,24 @@ async function addDataToFireStoreAndDexie(collectionName,newData) {
     if (collectionName === "LeadTKacc") {
       alert("Tài khoản trưởng điểm tập kết đã được thêm thành công");
     }
+    if (collectionName === "NVTKacc") {
+      alert("Tài khoản nhân viên điểm tập kết đã được thêm thành công");
+    }
+    if(collectionName === "GDVacc") 
+    alert("Tài khoản giao dịch viên đã được thêm thành công");
   } catch (error) {
     console.error("Loi khi add trong firestore: ", error);
   }
 }
 
 async function addDataToDexieTable(tableName, newData) {
-      try {
-        await dexieDB.table(tableName).add(newData);
-        console.log("add dexieDB");
-      } catch (error) {
-        console.error("Loi khi add data dexieDB", error);
-      }
+  try {
+    await dexieDB.table(tableName).add(newData);
+    console.log("add dexieDB");
+  } catch (error) {
+    console.error("Loi khi add data dexieDB", error);
+    console.log(dexieDB.table(tableName));
+  }
 }
 
 // function syncDexieToFirestore(tableName, collectionName, fieldsToSync) {
@@ -123,26 +138,55 @@ async function addDataToDexieTable(tableName, newData) {
 
 const loadUserState = (email) => {
   localStorage.setItem("email", email);
-  const firstTwoCharacters = email.substring(0, 2).toLowerCase();
-  let id;
-
-  if (firstTwoCharacters === "tk" || firstTwoCharacters === "gd") {
-    id = firstTwoCharacters;
-  } else {
-    id = "ceo";
-  }
-
-  localStorage.setItem("id", id);
-  console.log(id);
-  // const loadProfile = async () => {
-  //   const userDoc = await getDoc(doc(fireDB, "users", localStorage.getItem("id")));
-  //   const data = userDoc.data();
-  // };
-  // loadProfile();
+  const idCenter = email.slice(0, email.indexOf("@")).toUpperCase();
+  console.log(idCenter);
+  const id = "L" + idCenter;
+  if (id.slice(0, 3) === "LTK" || id.slice(0, 3) === "LGD")
+    localStorage.setItem("id", id);
+  else localStorage.setItem("id", "CEO");
+  const role = id.slice(0, 3) === "LTK" ? "LeadTKacc" : "LeadGDacc";
+  //const center = id.slice(0, 2) === "TK" ? "TKsystem" : "GDsystem";
+  const loadProfile = async () => {
+    const useDoc = await getDoc(doc(fireDB, role, localStorage.getItem("id")));
+    const data = useDoc.data();
+    // const useDocCenter = await getDoc(doc(fireDB, center, idCenter));
+    // const dataCenter = useDocCenter.data();
+    // console.log(dataCenter);
+    console.log(data);
+    if ((role === "LeadGDacc" || role === "LeadTKacc") && data) {
+      localStorage.setItem("phone", data.phone);
+      localStorage.setItem("name", data.name);
+      if (role === "LeadTKacc") {
+        localStorage.setItem("center", data.tk);
+        // localStorage.setItem("address", dataCenter.address);
+      } else if (role === "LeadGDacc") {
+        localStorage.setItem("center", data.gd);
+        // localStorage.setItem("address", dataCenter.address);
+      }
+    } else {
+      localStorage.setItem("name", "Trần Thị Trà Giang");
+      localStorage.setItem("center", "Magic Post");
+      localStorage.setItem("phone", "0868809172");
+      // localStorage.setItem(
+      //   "address",
+      //   "144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội"
+      // );
+    }
+  };
+  loadProfile();
 };
 
 const clearUserState = () => {
-  ["id", "email"].forEach((key) => localStorage.setItem(key, ""));
+  ["id", "name", "email", "phone", "center"].forEach((key) =>
+    localStorage.setItem(key, "")
+  );
 };
 
-export { dexieDB, loadUserState, clearUserState, deleteDataFromFireStoreAndDexie,updateDataFromFireStoreAndDexie, addDataToFireStoreAndDexie };
+export {
+  dexieDB,
+  loadUserState,
+  clearUserState,
+  deleteDataFromFireStoreAndDexie,
+  updateDataFromFireStoreAndDexie,
+  addDataToFireStoreAndDexie,
+};
