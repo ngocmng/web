@@ -1,5 +1,6 @@
 import Dexie from "dexie";
-import { fireDB } from "./firebase";
+import 'firebase/auth';
+import { fireAuth, fireDB } from "./firebase";
 import {
   doc,
   setDoc,
@@ -8,17 +9,18 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-const dexieDB = new Dexie("cachedUser16");
+const dexieDB = new Dexie("cachedUser23");
 dexieDB.version(1).stores({
-  users: "id, name",
-  package: "id",
   GDsystem: "id",
   TKsystem: "id",
   LeadGDacc: "id",
   LeadTKacc: "id",
   NVTKacc: "id",
   GDVacc: "id",
+  orderHistory: "historyID, orderID, currentLocation",
+  orders: "id",
 });
 
 async function deleteDataFromFireStoreAndDexie(collectionName, id) {
@@ -134,6 +136,25 @@ async function addDataToDexieTable(tableName, newData) {
 //   } catch (error) {
 //     console.error('Error fetching data:', error);
 //   }
+// };
+
+// const registerUser = (email, password) => {
+//   createUserWithEmailAndPassword(fireAuth, email, password)
+//   firebase.auth().createUserWithEmailAndPassword(email, password)
+//   .then(() => {
+//     console.log("Registered with:", email);
+//   })
+//   .catch((error) => {
+//     const errorCode = error.code;
+//     const errorMessage = error.message;
+//     console.error(errorCode, errorMessage);
+//   });
+//     // .then((userCredential) => {
+//     //   console.log("Registered with:", userCredential.user.email);
+//     // })
+//     // .catch((error) => {
+//     //   console.error(error);
+//     // });
 // };
 
 const loadUserState = (email) => {

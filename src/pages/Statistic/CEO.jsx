@@ -1,18 +1,58 @@
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import Page from "../../components/Page";
 import { BarChart } from "@mui/x-charts/BarChart";
-import BarsDataset from "../../components/Chart/CEOchart";
+import BarsDataset from "../../components/Chart/Barchart";
 import ToggleSwitch from "../../components/TripleToggleSwitch/TripleToggleSwitch";
 import { useEffect, useState } from "react";
 import { updateGraph } from "./ChartFunction";
 import Select from "../../components/Filter/Select";
+import { dexieDB } from "../../database/cache";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const StatisticCEO = () => {
+  const orders = useLiveQuery(() => dexieDB.table("orderHistory").toArray());
+  const ordersGD = useLiveQuery(() =>
+  dexieDB
+    .table("orderHistory")
+    .toArray()
+    .then((result) => result.filter((order) => order.currentLocation.substring(0, 2) === "GD"))
+);
+const ordersTK = useLiveQuery(() =>
+  dexieDB
+    .table("orderHistory")
+    .toArray()
+    .then((result) => result.filter((order) => order.currentLocation.substring(0, 2) === "TK"))
+);
   const [graph, setGraph] = useState([
     {
-      data: Array.from({ length: 12 }, (_, i) => {
+      id: "statistic",
+      data: Array.from({ length: 6 }, (_, i) => {
         return {
-          x: 2011 + i,
+          x: 2018 + i,
+          send: 0,
+          receive: 0,
+        };
+      }),
+    },
+  ]);
+  const [graphGD, setGraphGD] = useState([
+    {
+      id: "statistic",
+      data: Array.from({ length: 6 }, (_, i) => {
+        return {
+          x: 2018 + i,
+          send: 0,
+          receive: 0,
+        };
+      }),
+    },
+  ]);
+  const [graphTK, setGraphTK] = useState([
+    {
+      id: "statistic",
+      data: Array.from({ length: 6 }, (_, i) => {
+        return {
+          x: 2018 + i,
           send: 0,
           receive: 0,
         };
@@ -21,24 +61,113 @@ const StatisticCEO = () => {
   ]);
 
   const [timeView, setTimeView] = useState("Năm");
-  const [GDcenter, setGDcenter] = useState(["Tất cả"]);
-  const [TKcenter, setTKcenter] = useState(["Tất cả"]);
-  const [dateList, setDateList] = useState([]);
-  for (let i = 0; i <= 2; i++)
-    for (let j = 1; j <= 5; j++) {
-      const GD = `GD${i}${j}`;
-      const TK = `TK${i}${j}`;
-      GDcenter.push(GD);
-      TKcenter.push(TK);
+  const [GDcenter, setGDcenter] = useState("Tất cả");
+  const [TKcenter, setTKcenter] = useState("Tất cả");
+  const [filteredGD, setFilteredGD] = useState([]);
+  const [filteredTK, setFilteredTK] = useState([]);
+  const [sentDateList, setSentDateList] = useState([]);
+  const [receiveDateList, setReceiveDateList] = useState([]);
+  const [GDsentDateList, setGDSentDateList] = useState([]);
+  const [GDreceiveDateList, setGDReceiveDateList] = useState([]);
+  const [TKsentDateList, setTKSentDateList] = useState([]);
+  const [TKreceiveDateList, setTKReceiveDateList] = useState([]);
+
+
+  const GDcenterOption = ["Tất cả"];
+    for (let i = 1; i <= 64; i++) {
+      const GDItem = `GD${i.toString().padStart(2, '0')}`;
+      GDcenterOption.push(GDItem);
     }
 
+    const TKcenterOption = ["Tất cả"];
+      for (let i = 1; i <= 21; i++) {
+        const TKItem = `TK${i.toString().padStart(2, '0')}`;
+        TKcenterOption.push(TKItem);
+      }
+  
+
+  useEffect(() => {
+    if(!ordersGD) return;
+    setFilteredGD(
+      GDcenter === "Tất cả" ? ordersGD : ordersGD.filter((order) => order.currentLocation === GDcenter)
+    )
+  },[ordersGD, GDcenter])
+  
+  console.log(GDcenter);
+
+  useEffect(() => {
+    if(!ordersTK) return;
+    setFilteredTK(
+      TKcenter === "Tất cả" ? ordersTK : ordersTK.filter((order) => order.currentLocation === TKcenter)
+    )
+  },[ordersTK, TKcenter])
+  
+
+  useEffect(() => {
+    if (!orders) return;
+    setSentDateList(
+      orders.filter(
+        (order) =>
+          order.historyID.slice(-1) === "1" || order.historyID.slice(-1) === "2"
+      )
+      .map((order) => order["date"])
+    );
+    setReceiveDateList(
+      orders.filter(
+        (order) =>
+          order.historyID.slice(-1) === "3" || order.historyID.slice(-1) === "4"
+      )
+      .map((order) => order["date"])
+    );
+  }, [orders]);
+
+  useEffect(() => {
+    if (!filteredGD) return;
+    setGDSentDateList(
+      filteredGD
+        .filter((order) => order.historyID.slice(-1) === "1")
+        .map((order) => order["date"])
+    );
+    setGDReceiveDateList(
+      filteredGD
+        .filter((order) => order.historyID.slice(-1) === "4")
+        .map((order) => order["date"])
+    );
+  }, [filteredGD]);
+
+  useEffect(() => {
+    if (!filteredTK) return;
+    setTKSentDateList(
+      filteredTK
+        .filter((order) => order.historyID.slice(-1) === "2")
+        .map((order) => order["date"])
+    );
+    setTKReceiveDateList(
+      filteredTK
+        .filter((order) => order.historyID.slice(-1) === "3")
+        .map((order) => order["date"])
+    );
+  }, [filteredTK]);
+
+  // console.log(sentDateList);
+  // console.log(receiveDateList);
+
   useEffect(
-    () => updateGraph(dateList, timeView, graph[0], setGraph),
-    [dateList, timeView]
+    () => updateGraph(sentDateList, receiveDateList, timeView, graph[0], setGraph),
+    [sentDateList, receiveDateList, timeView]
+  );
+  useEffect(
+    () => updateGraph(GDsentDateList, GDreceiveDateList, timeView, graphGD[0], setGraphGD),
+    [GDsentDateList, GDreceiveDateList, timeView]
+  );
+  useEffect(
+    () => updateGraph(TKsentDateList, TKreceiveDateList, timeView, graphTK[0], setGraphTK),
+    [TKsentDateList, TKreceiveDateList, timeView]
   );
   const switchTime = (mode) => setTimeView(mode);
   const selectGDcenter = (center) => setGDcenter(center);
   const selectTKcenter = (center) => setTKcenter(center);
+  //console.log(filteredGD);
 
   return (
     <Page>
@@ -115,7 +244,7 @@ const StatisticCEO = () => {
                   height: "90%",
                 }}
               >
-                <BarsDataset view={"all"} />
+                <BarsDataset data={graph} view={"all"} />
               </Box>
             </Box>
           </Stack>
@@ -155,7 +284,7 @@ const StatisticCEO = () => {
                 >
                   Thống kê theo điểm giao dịch
                 </Typography>
-                <Select options={GDcenter} onSelect={selectGDcenter} />
+                <Select options={GDcenterOption} onSelect={selectGDcenter} />
               </Stack>
               <Box
                 sx={{
@@ -164,7 +293,7 @@ const StatisticCEO = () => {
                   height: "50%",
                 }}
               >
-                <BarsDataset view={"none"}/>
+                <BarsDataset data={graphGD} />
               </Box>
             </Box>
             {/* c3 */}
@@ -204,7 +333,7 @@ const StatisticCEO = () => {
                 >
                   Thống kê theo điểm tập kết
                 </Typography>
-                <Select options={TKcenter} onSelect={selectTKcenter} />
+                <Select options={TKcenterOption} onSelect={selectTKcenter} />
               </Stack>
               <Box
                 sx={{
@@ -214,7 +343,7 @@ const StatisticCEO = () => {
                   height: "50%",
                 }}
               >
-                <BarsDataset view={"none"}/>
+                <BarsDataset data={graphTK} />
               </Box>
             </Box>
           </Stack>

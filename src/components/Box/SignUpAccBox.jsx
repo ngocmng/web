@@ -2,13 +2,13 @@ import { useState } from "react";
 
 import { Typography, Stack, Box } from "@mui/material";
 import SignUpForm from "../FormInput/SignUpAccForm";
-import { getDataGDacc } from "../Table/GD_Account";
-import { getDataTKacc } from "../Table/TK_Account";
-import { getDataNVTKacc, getTKpoint } from "../Table/NVTK_Account";
 import {
   addDataToFireStoreAndDexie,
+  registerUser,
   updateDataFromFireStoreAndDexie,
 } from "../../database/cache";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { fireAuth } from "../../database/firebase";
 
 const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
   const defaultForm = {
@@ -30,9 +30,6 @@ const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
   const handleSubmit = () => {
     const submit = async () => {
       const { name, center, phone, dob, sex } = form;
-      // let username ="";
-      // let email = "";
-      // let id = "",
 
       if (centerroot === "gd" || centerroot === "tk") {
         const System = system.find((item) => item.name === center);
@@ -45,6 +42,13 @@ const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
             alert("Vui lòng điền đầy đủ các mục");
             return;
           }
+          setForm({
+            ...form,
+            id : id,
+            username : username,
+            email: email,
+            password:password,
+          });
           if (centerroot === "gd") {
             const form1 = {
               id: System.id,
@@ -69,8 +73,9 @@ const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
               sex: sex,
             };
             addDataToFireStoreAndDexie("LeadGDacc", form2);
-            //updateDataFromFireStoreAndDexie(collectionName, id, newData)
+            //registerUser(form2.email, form2.password);
             updateDataFromFireStoreAndDexie("GDsystem", System.id, form1);
+            //createUserWithEmailAndPassword(fireAuth, form2.email, form2.password)
           } else {
             const form1 = {
               id: System.id,
@@ -104,13 +109,20 @@ const SignUpAccBox = ({ data, system, centerroot, onClose }) => {
           lastID = `TK${(currentNumber + 1).toString().padStart(5, "0")}`;
         });
         const username = "staff" + lastID;
-        const email = lastID + "@magic-post.com";
+        const email = lastID.substring(0, 4) + "000@magic-post.com";
         const id = lastID;
-        const password = "MG@" + username;
+        const password = "MG@" + username.substring(0, 9);
         if (!name || !phone || !dob || !sex) {
           alert("Vui lòng điền đầy đủ các mục");
           return;
         }
+        setForm({
+          ...form,
+          id : id,
+          username : username,
+          email: email,
+          password:password,
+        });
           const form1 = {
             id: id,
             name: name,

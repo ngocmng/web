@@ -1,31 +1,91 @@
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import Page from "../../components/Page";
-import BarsDataset from "../../components/Chart/CEOchart";
+import BarsDataset from "../../components/Chart/Barchart";
 import ToggleSwitch from "../../components/TripleToggleSwitch/TripleToggleSwitch";
 import { useEffect, useState } from "react";
 import { updateGraph } from "./ChartFunction";
-import StickyHeadTable from "../../components/Table/Test";
+import { dexieDB } from "../../database/cache";
+import { useLiveQuery } from "dexie-react-hooks";
+import OrdersTable from "../../components/Table/Orders";
 
 const StatisticGD = () => {
+  const orders = useLiveQuery(() =>
+    dexieDB
+      .table("orderHistory")
+      .where("currentLocation")
+      .equals(localStorage.getItem("id").slice(-4))
+      .toArray()
+  );
+
+  const orderDetail = useLiveQuery(() =>
+    dexieDB
+      .table("orders")
+      .toArray()
+  );
+
+  //  console.log(orders);
+  // console.log(orderDetail);
+
+  //if (orders && orderDetail) {
+    const combinedArray = orders && orderDetail ? orders.map(order => {
+      const correspondingOrderDetail = orderDetail.find(detail => detail.id === order.orderID);
+  
+      if (correspondingOrderDetail) {
+        return {
+          id: correspondingOrderDetail.id,
+          date: order.date,
+          startGDpoint: correspondingOrderDetail.startGDpoint,
+          startTKpoint: correspondingOrderDetail.startTKpoint,
+          endGDpoint: correspondingOrderDetail.endGDpoint,
+          endTKpoint: correspondingOrderDetail.endTKpoint,
+        };
+      }
+  
+      return null; 
+    }) : "";
+  
+    //console.log(combinedArray);
+  // } else {
+  //   console.error("Orders or orderDetail is undefined.");
+  // }
+  
+
+  //console.log(orders);
   const [graph, setGraph] = useState([
     {
       data: Array.from({ length: 6 }, (_, i) => {
         return {
           x: 2018 + i,
-          send: 0,
+          sent: 0,
           receive: 0,
         };
       }),
     },
   ]);
+  //console.log(graph);
 
   const [timeView, setTimeView] = useState("Năm");
-  const [dateList, setDateList] = useState([]);
-  const [table, setTable] = useState([]);
+  const [sentDateList, setSentDateList] = useState([]);
+  const [receiveDateList, setReceiveDateList] = useState([]);
 
+  useEffect(() => {
+    if (!orders) return;
+    setSentDateList(
+      orders
+        .filter((order) => order.historyID.slice(-1) === "2")
+        .map((order) => order["date"])
+    );
+    setReceiveDateList(
+      orders
+        .filter((order) => order.historyID.slice(-1) === "3")
+        .map((order) => order["date"])
+    );
+  }, [orders]);
+ 
+ //console.log(sentDateList);
   useEffect(
-    () => updateGraph(dateList, timeView, graph[0], setGraph),
-    [dateList, timeView]
+    () => updateGraph(sentDateList, receiveDateList, timeView, graph[0], setGraph),
+    [sentDateList, receiveDateList, timeView]
   );
   const switchTime = (mode) => setTimeView(mode);
 
@@ -115,8 +175,7 @@ const StatisticGD = () => {
                         zIndex: 1,
                       }}
                     >
-                      Thống kê số lượng hàng gửi, hàng nhận tại UET
-                      {/* Cần sửa lại tên giao dịch tùy thuộc việc đăng nhập với tài khoản nào */}
+                      Thống kê số lượng hàng gửi, hàng nhận tại {localStorage.getItem("center")}
                     </Typography>
                   </Stack>
                   <Box
@@ -135,7 +194,7 @@ const StatisticGD = () => {
                       },
                     }}
                   >
-                    <BarsDataset view={"gd"} />
+                    <BarsDataset data={graph} />
                   </Box>
                 </Box>
               </Box>
@@ -178,7 +237,8 @@ const StatisticGD = () => {
               }}
             >
               {/* Danh sách này */}
-              <StickyHeadTable />
+              {/* <StickyHeadTable /> */}
+              <OrdersTable data={combinedArray}/>
             </Box>
           </Grid>
         </Grid>

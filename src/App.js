@@ -20,7 +20,7 @@ import { fireAuth, fireDB } from "./database/firebase";
 const App = () => {
   const logPackageDataFromDexieDB = async () => {
     try {
-      const packageData = await dexieDB.table("LeadGDacc").toArray();
+      const packageData = await dexieDB.table("orderHistory").toArray();
       console.log("Dữ liệu từ bảng package trong DexieDB:", packageData);
     } catch (error) {
       console.error("Lỗi khi truy vấn dữ liệu từ DexieDB:", error);
@@ -91,7 +91,7 @@ const App = () => {
             });
         return;
       });
-      logPackageDataFromDexieDB();
+      //logPackageDataFromDexieDB();
     });
     return () => listener();
   }, []);
@@ -137,7 +137,7 @@ const App = () => {
             });
         return;
       });
-      logPackageDataFromDexieDB();
+      //logPackageDataFromDexieDB();
     });
     return () => listener();
   }, []);
@@ -165,6 +165,54 @@ const App = () => {
     return () => listener();
   }, []);
 
+  useEffect(() => {
+    const listener = onSnapshot(collection(fireDB, "orderHistory"), (snapshot) => {
+      snapshot.docChanges().forEach(async (system) => {
+        const systemDoc = system.doc;
+        const systemData = systemDoc.data();
+        await dexieDB.table("orderHistory").put({
+              historyID: systemData.historyID,
+              orderID: systemData.orderID,
+              date: systemData.date,
+              currentLocation : systemData.currentLocation,
+              Description: systemData.Description,
+              orderStatus: systemData.orderStatus,
+            });
+        return;
+      });
+      //logPackageDataFromDexieDB();
+    });
+    return () => listener();
+  }, []);
+
+  useEffect(() => {
+    const listener = onSnapshot(collection(fireDB, "orders"), (snapshot) => {
+      snapshot.docChanges().forEach(async (system) => {
+        const systemDoc = system.doc;
+        const systemData = systemDoc.data();
+        await dexieDB.table("orders").put({
+              id: systemData.id,
+              senderName: systemData.senderName,
+              senderPhone: systemData.senderPhone,
+              senderAddress: systemData.senderAddress,
+              receiveName: systemData.receiveName,
+              receivePhone: systemData.receivePhone,
+              receiveAddress: systemData.receiveAddress,
+              type: systemData.type,
+              weight: systemData.weight,
+              cost: systemData.cost,
+              startGDpoint: systemData.startGDpoint,
+              startTKpoint: systemData.startTKpoint,
+              endTKpoint: systemData.endTKpoint,
+              endGDpoint: systemData.endGDpoint,
+            });
+        return;
+      });
+      //logPackageDataFromDexieDB();
+    });
+    return () => listener();
+  }, []);
+
 
   const navigate = useNavigate();
   const onSignIn = () => navigate("/home");
@@ -176,7 +224,6 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<SignIn transfer={onSignIn} />} />
-          {/* <Route path="/" element={id === "ceo" ? <HomeCEO /> : id==="gd"? <HomeGD/>: <HomeTK/>} /> */}
           <Route
             path="/home"
             element={

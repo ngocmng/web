@@ -2,6 +2,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import { GoGraph } from "react-icons/go";
 import { FaUsersCog } from "react-icons/fa";
 import { IoIosGlobe } from "react-icons/io";
+import { VscGraph } from "react-icons/vsc";
 import styles from "./NavItem.module.css";
 
 
@@ -13,7 +14,7 @@ const items = [
   },
   {
     path: "/statistic",
-    icon: <GoGraph className={styles["nav-icon"]} />,
+    icon: <VscGraph className={styles["nav-icon"]} />,
     title: "Thống kê",
   },
   {

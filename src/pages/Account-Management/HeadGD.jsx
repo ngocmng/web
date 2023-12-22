@@ -5,7 +5,7 @@ import { useState } from "react";
 import SignUpForm from "../../components/FormInput/SignUpAccForm";
 import SignUpGDVForm from "../../components/FormInput/SignUpGdvAccForm";
 import { useLiveQuery } from "dexie-react-hooks";
-import { addDataToFireStoreAndDexie, dexieDB } from "../../database/cache";
+import { addDataToFireStoreAndDexie, dexieDB, registerUser } from "../../database/cache";
 
 const HeadGDAccount = () => {
   const id = localStorage.getItem("id").slice(1);
@@ -41,9 +41,9 @@ const HeadGDAccount = () => {
         lastID = `GD${(currentNumber + 1).toString().padStart(5, "0")}`;
       });
       const username = "staff" + lastID;
-      const email = lastID + "@magic-post.com";
+      const email = lastID.substring(0, 4) + "000@magic-post.com";
       const id = lastID;
-      const password = "MG@" + username;
+      const password = "MG@" + username.substring(0, 9);
       if (!name || !phone || !dob || !sex) {
         alert("Vui lòng điền đầy đủ các mục");
         return;
@@ -67,6 +67,7 @@ const HeadGDAccount = () => {
         password: password,
       };
       addDataToFireStoreAndDexie("GDVacc", form1);
+      //registerUser(email, password);
     };
 
     submit();

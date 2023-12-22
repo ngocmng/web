@@ -63,6 +63,12 @@ const SignUpSysBox = ({ data, centerroot, onClose }) => {
         id: realID,
         email: `${realID.toLowerCase()}@magic-post.com`, 
       };
+
+      setForm({
+        ...form,
+        id : realID,
+        email: `${realID.toLowerCase()}@magic-post.com`,
+      });
       //console.log(form2);
 
       if (centerroot === "gd") {
