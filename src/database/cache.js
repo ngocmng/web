@@ -12,7 +12,7 @@ import {
 
 import { useLiveQuery } from "dexie-react-hooks";
 
-const dexieDB = new Dexie("cachedUser30");
+const dexieDB = new Dexie("cachedUser31");
 dexieDB.version(1).stores({
   GDsystem: "id",
   TKsystem: "id",

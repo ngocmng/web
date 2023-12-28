@@ -54,7 +54,7 @@ const UserInfo = ({ open, close }) => {
         >
           {id === "CEO"
             ? "Lãnh đạo " 
-            : id === "LGD"
+            : id === "LGD" || id === "EGD"
             ? "Điểm giao dịch "
             : "Điểm tập kết "}
             <br/>

@@ -33,9 +33,9 @@ const StatisticGDV = () => {
   ? orders
       .filter(
         (order) =>
-          order.historyID.slice(-1) === "4" && //Trên này thay bằng 5
-          //order.orderStatus === IDstateView
-          order.orderStatus === "Đã giao"
+          order.historyID.slice(-1) === "5" && //Trên này thay bằng 5
+          order.orderStatus === IDstateView
+          //order.orderStatus === "Đã giao"
       )
       .map((order) => {
         const correspondingOrderDetail = orderDetail.find(
@@ -89,12 +89,12 @@ const StatisticGDV = () => {
     if (!orders) return;
     setSentDateList(
       orders
-        .filter((order) => order.historyID.slice(-1) === "4") //Cần sửa lại bằng "5" và so sánh điều kiện orderStatus
+        .filter((order) => order.historyID.slice(-1) === "5" && order.orderStatus === "Đã giao thành công cho người nhận") //Cần sửa lại bằng "5" và so sánh điều kiện orderStatus
         .map((order) => order["date"])
     );
     setReceiveDateList(
       orders
-        .filter((order) => order.historyID.slice(-1) === "5")  //Cần sửa lại bằng "5" và so sánh điều kiện orderStatus
+        .filter((order) => order.historyID.slice(-1) === "5" && order.orderStatus === "Đã giao không thành công cho người nhận")  //Cần sửa lại bằng "5" và so sánh điều kiện orderStatus
         .map((order) => order["date"])
     );
   }, [orders]);
@@ -266,7 +266,7 @@ const StatisticGDV = () => {
                     <BarsDataset
                       data={graph}
                       view={"all"}
-                      label1={"Đã giao"}
+                      label1={"Giao thành công"}
                       label2={"Giao không thành công"}
                     />
                   </Box>

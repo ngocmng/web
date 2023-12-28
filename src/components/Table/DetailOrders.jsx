@@ -128,7 +128,7 @@ export default function DetailOrdersTable({ data }) {
 
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "date";
-  const DEFAULT_ROWS_PER_PAGE = 10;
+  const DEFAULT_ROWS_PER_PAGE = 8;
 
   function OrdersTableHead(props) {
     const { order, orderBy, onRequestSort } = props;
