@@ -133,7 +133,7 @@ export default function OrdersTable({ data }) {
 
   const DEFAULT_ORDER = "asc";
   const DEFAULT_ORDER_BY = "date";
-  const DEFAULT_ROWS_PER_PAGE = 5;
+  const DEFAULT_ROWS_PER_PAGE = 15;
 
   function OrdersTableHead(props) {
     const { order, orderBy, onRequestSort } = props;

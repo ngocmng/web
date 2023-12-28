@@ -28,7 +28,7 @@ body {
 }
 
 .App {
-  display: flex;
+  display: flex; 
   height: 100vh;
   /* background-color: var(--background-color); */
   color: var(--primary-color);

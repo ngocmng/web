@@ -6,6 +6,7 @@ import Switch from "../../components/Switch";
 import { useEffect, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { dexieDB, fetchData } from "../../database/cache";
+import { itemsCEO } from "../../components/Navbar/ItemInfor";
 
 const System = () => {
     const dataGD = useLiveQuery(() => dexieDB.table("GDsystem").toArray());  
@@ -21,7 +22,7 @@ const System = () => {
     );
   };
   return (
-    <Page>
+    <Page items={itemsCEO}>
       <Grid container justifyContent="center" spacing={0} height={1}>
         <Grid
           item

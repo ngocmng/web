@@ -3,6 +3,7 @@ import Page from "../../components/Page";
 import NVTK_Account from "../../components/Table/NVTK_Account";
 import { useLiveQuery } from "dexie-react-hooks";
 import { dexieDB } from "../../database/cache";
+import { itemsLeadTK } from "../../components/Navbar/ItemInfor";
 
 const HeadTKAccount = () => {
   const id = localStorage.getItem("id").slice(1);
@@ -15,7 +16,7 @@ const HeadTKAccount = () => {
   // console.log(id);
   // console.log(dataNVTK);
   return (
-    <Page>
+    <Page items={itemsLeadTK}>
       <Grid container justifyContent="center" spacing={0} height={1}>
         <Grid
           item

@@ -7,6 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Page from '../Page';
+import { itemsGDV, itemsNVTK } from '../Navbar/ItemInfor';
 
 const columns = [
   { id: 'name', label: 'Name', minWidth: 170 },
@@ -71,6 +73,7 @@ export default function StickyHeadTable() {
   };
 
   return (
+    <Page items={itemsGDV}>
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
@@ -119,5 +122,6 @@ export default function StickyHeadTable() {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </Paper>
+    </Page>
   );
 }

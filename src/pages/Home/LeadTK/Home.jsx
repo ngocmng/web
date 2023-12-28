@@ -2,11 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { Grid, Box, Typography, Stack } from "@mui/material";
 import Page from "../../../components/Page";
 import review from "./Review";
+import { itemsLeadTK } from "../../../components/Navbar/ItemInfor";
 
 const HomeTK = () => {
   const navigate = useNavigate();
   return (
-    <Page>
+    <Page items={itemsLeadTK}>
       <Grid
         container
         sx={{

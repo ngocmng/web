@@ -16,6 +16,19 @@ import { useEffect } from "react";
 import { dexieDB } from "./database/cache";
 import { collection, onSnapshot } from "firebase/firestore";
 import { fireAuth, fireDB } from "./database/firebase";
+import HomeGDV from "./pages/Home/GDV/Home";
+import HomeNVTK from "./pages/Home/NVTK/Home";
+import StickyHeadTable from "./components/Table/Test";
+import StatisticGDV from "./pages/Statistic/GDV";
+import GDShipment from "./components/Shipments/GDShipment";
+import TKShipment from "./components/Shipments/TKShipment";
+import GDConfirm from "./components/Confirmation/GDConfirm";
+import TKConfirm from "./components/Confirmation/TKConfirm";
+import MainPage from "./pages/MainPage";
+import ShipmentGD from "./pages/NVTK/ShipmentGD";
+import ShipmentTK from "./pages/NVTK/ShipmentTK";
+import ConfirmGD from "./pages/NVTK/ConfirmGD";
+import ConfirmTK from "./pages/NVTK/ConfirmTK";
 
 const App = () => {
   const logPackageDataFromDexieDB = async () => {
@@ -30,205 +43,250 @@ const App = () => {
   //   logusersDataFromDexieDB();
   // })
 
-  useEffect(() => {
-    const listener = onSnapshot(collection(fireDB, "GDsystem"), (snapshot) => {
-      snapshot.docChanges().forEach(async (system) => {
-        const systemDoc = system.doc;
-        const systemData = systemDoc.data();
-        await dexieDB.table("GDsystem").put({
-              id: systemData.id,
-              name: systemData.name,
-              manage : systemData.manage,
-              hotline: systemData.hotline,
-              email : systemData.email,
-              address: systemData.address,
-              setDay:systemData.setDay,
-              coverArea: systemData.coverArea,
-              TKpoint:systemData.TKpoint,
-            });
-        return;
-      });
-      //logPackageDataFromDexieDB();
-    });
-    return () => listener();
-  }, []);
-  useEffect(() => {
-    const listener = onSnapshot(collection(fireDB, "TKsystem"), (snapshot) => {
-      snapshot.docChanges().forEach(async (system) => {
-        const systemDoc = system.doc;
-        const systemData = systemDoc.data();
-        await dexieDB.table("TKsystem").put({
-              id: systemData.id,
-              name: systemData.name,
-              manage : systemData.manage,
-              hotline: systemData.hotline,
-              email : systemData.email,
-              address: systemData.address,
-              setDay:systemData.setDay,
-            });
-        return;
-      });
-      //logPackageDataFromDexieDB();
-    });
-    return () => listener();
-  }, []);
+  // useEffect(() => {
+  //   const listener = onSnapshot(collection(fireDB, "GDsystem"), (snapshot) => {
+  //     snapshot.docChanges().forEach(async (system) => {
+  //       const systemDoc = system.doc;
+  //       const systemData = systemDoc.data();
+  //       await dexieDB.table("GDsystem").put({
+  //             id: systemData.id,
+  //             name: systemData.name,
+  //             manage : systemData.manage,
+  //             hotline: systemData.hotline,
+  //             email : systemData.email,
+  //             address: systemData.address,
+  //             setDay:systemData.setDay,
+  //             coverArea: systemData.coverArea,
+  //             TKpoint:systemData.TKpoint,
+  //           });
+  //       return;
+  //     });
+  //     //logPackageDataFromDexieDB();
+  //   });
+  //   return () => listener();
+  // }, []);
+  // useEffect(() => {
+  //   const listener = onSnapshot(collection(fireDB, "TKsystem"), (snapshot) => {
+  //     snapshot.docChanges().forEach(async (system) => {
+  //       const systemDoc = system.doc;
+  //       const systemData = systemDoc.data();
+  //       await dexieDB.table("TKsystem").put({
+  //             id: systemData.id,
+  //             name: systemData.name,
+  //             manage : systemData.manage,
+  //             hotline: systemData.hotline,
+  //             email : systemData.email,
+  //             address: systemData.address,
+  //             setDay:systemData.setDay,
+  //           });
+  //       return;
+  //     });
+  //     //logPackageDataFromDexieDB();
+  //   });
+  //   return () => listener();
+  // }, []);
 
-  useEffect(() => {
-    const listener = onSnapshot(collection(fireDB, "LeadGDacc"), (snapshot) => {
-      snapshot.docChanges().forEach(async (system) => {
-        const systemDoc = system.doc;
-        const systemData = systemDoc.data();
-        await dexieDB.table("LeadGDacc").put({
-              id: systemData.id,
-              username: systemData.username,
-              name: systemData.name,
-              gd : systemData.gd,
-              dob: systemData.dob,
-              sex: systemData.sex,
-              email : systemData.email,
-              phone: systemData.phone,
-              password: systemData.password
-            });
-        return;
-      });
-      //logPackageDataFromDexieDB();
-    });
-    return () => listener();
-  }, []);
+  // useEffect(() => {
+  //   const listener = onSnapshot(collection(fireDB, "LeadGDacc"), (snapshot) => {
+  //     snapshot.docChanges().forEach(async (system) => {
+  //       const systemDoc = system.doc;
+  //       const systemData = systemDoc.data();
+  //       await dexieDB.table("LeadGDacc").put({
+  //             id: systemData.id,
+  //             username: systemData.username,
+  //             name: systemData.name,
+  //             gd : systemData.gd,
+  //             dob: systemData.dob,
+  //             sex: systemData.sex,
+  //             email : systemData.email,
+  //             phone: systemData.phone,
+  //             password: systemData.password
+  //           });
+  //       return;
+  //     });
+  //     //logPackageDataFromDexieDB();
+  //   });
+  //   return () => listener();
+  // }, []);
 
-  useEffect(() => {
-    const listener = onSnapshot(collection(fireDB, "LeadTKacc"), (snapshot) => {
-      snapshot.docChanges().forEach(async (system) => {
-        const systemDoc = system.doc;
-        const systemData = systemDoc.data();
-        await dexieDB.table("LeadTKacc").put({
-              id: systemData.id,
-              username: systemData.username,
-              name: systemData.name,
-              tk : systemData.tk,
-              dob: systemData.dob,
-              sex: systemData.sex,
-              email : systemData.email,
-              phone: systemData.phone,
-              password: systemData.password
-            });
-        return;
-      });
-      //logPackageDataFromDexieDB();
-    });
-    return () => listener();
-  }, []);
+  // useEffect(() => {
+  //   const listener = onSnapshot(collection(fireDB, "LeadTKacc"), (snapshot) => {
+  //     snapshot.docChanges().forEach(async (system) => {
+  //       const systemDoc = system.doc;
+  //       const systemData = systemDoc.data();
+  //       await dexieDB.table("LeadTKacc").put({
+  //             id: systemData.id,
+  //             username: systemData.username,
+  //             name: systemData.name,
+  //             tk : systemData.tk,
+  //             dob: systemData.dob,
+  //             sex: systemData.sex,
+  //             email : systemData.email,
+  //             phone: systemData.phone,
+  //             password: systemData.password
+  //           });
+  //       return;
+  //     });
+  //     //logPackageDataFromDexieDB();
+  //   });
+  //   return () => listener();
+  // }, []);
 
-  useEffect(() => {
-    const listener = onSnapshot(collection(fireDB, "NVTKacc"), (snapshot) => {
-      snapshot.docChanges().forEach(async (system) => {
-        const systemDoc = system.doc;
-        const systemData = systemDoc.data();
-        await dexieDB.table("NVTKacc").put({
-              id: systemData.id,
-              username: systemData.username,
-              name: systemData.name,
-              tk : systemData.tk,
-              dob: systemData.dob,
-              sex: systemData.sex,
-              email : systemData.email,
-              phone: systemData.phone,
-              password: systemData.password
-            });
-        return;
-      });
-      //logPackageDataFromDexieDB();
-    });
-    return () => listener();
-  }, []);
+  // useEffect(() => {
+  //   const listener = onSnapshot(collection(fireDB, "NVTKacc"), (snapshot) => {
+  //     snapshot.docChanges().forEach(async (system) => {
+  //       const systemDoc = system.doc;
+  //       const systemData = systemDoc.data();
+  //       await dexieDB.table("NVTKacc").put({
+  //             id: systemData.id,
+  //             username: systemData.username,
+  //             name: systemData.name,
+  //             tk : systemData.tk,
+  //             dob: systemData.dob,
+  //             sex: systemData.sex,
+  //             email : systemData.email,
+  //             phone: systemData.phone,
+  //             password: systemData.password
+  //           });
+  //       return;
+  //     });
+  //     //logPackageDataFromDexieDB();
+  //   });
+  //   return () => listener();
+  // }, []);
 
-  useEffect(() => {
-    const listener = onSnapshot(collection(fireDB, "GDVacc"), (snapshot) => {
-      snapshot.docChanges().forEach(async (system) => {
-        const systemDoc = system.doc;
-        const systemData = systemDoc.data();
-        await dexieDB.table("GDVacc").put({
-              id: systemData.id,
-              username: systemData.username,
-              name: systemData.name,
-              gd : systemData.gd,
-              dob: systemData.dob,
-              sex: systemData.sex,
-              email : systemData.email,
-              phone: systemData.phone,
-              password: systemData.password
-            });
-        return;
-      });
-      //logPackageDataFromDexieDB();
-    });
-    return () => listener();
-  }, []);
+  // useEffect(() => {
+  //   const listener = onSnapshot(collection(fireDB, "GDVacc"), (snapshot) => {
+  //     snapshot.docChanges().forEach(async (system) => {
+  //       const systemDoc = system.doc;
+  //       const systemData = systemDoc.data();
+  //       await dexieDB.table("GDVacc").put({
+  //             id: systemData.id,
+  //             username: systemData.username,
+  //             name: systemData.name,
+  //             gd : systemData.gd,
+  //             dob: systemData.dob,
+  //             sex: systemData.sex,
+  //             email : systemData.email,
+  //             phone: systemData.phone,
+  //             password: systemData.password
+  //           });
+  //       return;
+  //     });
+  //     //logPackageDataFromDexieDB();
+  //   });
+  //   return () => listener();
+  // }, []);
 
-  useEffect(() => {
-    const listener = onSnapshot(collection(fireDB, "orderHistory"), (snapshot) => {
-      snapshot.docChanges().forEach(async (system) => {
-        const systemDoc = system.doc;
-        const systemData = systemDoc.data();
-        await dexieDB.table("orderHistory").put({
-              historyID: systemData.historyID,
-              orderID: systemData.orderID,
-              date: systemData.date,
-              currentLocation : systemData.currentLocation,
-              Description: systemData.Description,
-              orderStatus: systemData.orderStatus,
-            });
-        return;
-      });
-      //logPackageDataFromDexieDB();
-    });
-    return () => listener();
-  }, []);
+  // useEffect(() => {
+  //   const listener = onSnapshot(collection(fireDB, "orderHistory"), (snapshot) => {
+  //     snapshot.docChanges().forEach(async (system) => {
+  //       const systemDoc = system.doc;
+  //       const systemData = systemDoc.data();
+  //       await dexieDB.table("orderHistory").put({
+  //             historyID: systemData.historyID,
+  //             orderID: systemData.orderID,
+  //             date: systemData.date,
+  //             currentLocation : systemData.currentLocation,
+  //             Description: systemData.Description,
+  //             orderStatus: systemData.orderStatus,
+  //           });
+  //       return;
+  //     });
+  //     //logPackageDataFromDexieDB();
+  //   });
+  //   return () => listener();
+  // }, []);
 
-  useEffect(() => {
-    const listener = onSnapshot(collection(fireDB, "orders"), (snapshot) => {
-      snapshot.docChanges().forEach(async (system) => {
-        const systemDoc = system.doc;
-        const systemData = systemDoc.data();
-        await dexieDB.table("orders").put({
-              id: systemData.id,
-              senderName: systemData.senderName,
-              senderPhone: systemData.senderPhone,
-              senderAddress: systemData.senderAddress,
-              receiveName: systemData.receiveName,
-              receivePhone: systemData.receivePhone,
-              receiveAddress: systemData.receiveAddress,
-              type: systemData.type,
-              weight: systemData.weight,
-              cost: systemData.cost,
-              startGDpoint: systemData.startGDpoint,
-              startTKpoint: systemData.startTKpoint,
-              endTKpoint: systemData.endTKpoint,
-              endGDpoint: systemData.endGDpoint,
-            });
-        return;
-      });
-      //logPackageDataFromDexieDB();
-    });
-    return () => listener();
-  }, []);
+  // useEffect(() => {
+  //   const listener = onSnapshot(collection(fireDB, "orders"), (snapshot) => {
+  //     snapshot.docChanges().forEach(async (system) => {
+  //       const systemDoc = system.doc;
+  //       const systemData = systemDoc.data();
+  //       await dexieDB.table("orders").put({
+  //             id: systemData.id,
+  //             senderName: systemData.senderName,
+  //             senderPhone: systemData.senderPhone,
+  //             senderAddress: systemData.senderAddress,
+  //             receiverName: systemData.receiverName,
+  //             receiverPhone: systemData.receiverPhone,
+  //             receiverAddress: systemData.receiverAddress,
+  //             type: systemData.type,
+  //             weight: systemData.weight,
+  //             cost: systemData.cost,
+  //             startGDpoint: systemData.startGDpoint,
+  //             startTKpoint: systemData.startTKpoint,
+  //             endTKpoint: systemData.endTKpoint,
+  //             endGDpoint: systemData.endGDpoint,
+  //           });
+  //       return;
+  //     });
+  //     //logPackageDataFromDexieDB();
+  //   });
+  //   return () => listener();
+  // }, []);
 
+  // useEffect(() => {
+  //     const listener = onSnapshot(collection(fireDB, "shipment"), (snapshot) => {
+  //       snapshot.docChanges().forEach(async (system) => {
+  //         const systemDoc = system.doc;
+  //         const systemData = systemDoc.data();
+  //         await dexieDB.table("shipment").put({
+  //               id: systemData.shipmentID,
+  //               date: systemData.createDate,
+  //               counts: systemData.Counts,
+  //               ordersList: systemData.details,
+  //               startGDpoint: systemData.startGDpoint,
+  //               startTKpoint: systemData.startTKpoint,
+  //               endTKpoint: systemData.endTKpoint,
+  //               endGDpoint: systemData.endGDpoint,
+  //               status: systemData.status,
+  //             });
+  //         return;
+  //       });
+  //       // logPackageDataFromDexieDB();
+  //       // console.log("data from DexieDB: ", dexieDB.table("shipment").toArray());
+  //     });
+  //     return () => listener();
+  //   }, []);
 
   const navigate = useNavigate();
   const onSignIn = () => navigate("/home");
-  const id = localStorage.getItem("id").slice(0,3);
+  const id = localStorage.getItem("id")
+    ? localStorage.getItem("id").slice(0, 3)
+    : "";
+  console.log(localStorage.getItem("id"));
   return (
     <>
       <div className="App">
         <CssBaseline />
 
         <Routes>
-          <Route path="/" element={<SignIn transfer={onSignIn} />} />
+          {/* <SignIn transfer={onSignIn} */}
+          <Route
+            path="/"
+            element={
+              <div className="Main">
+                <MainPage tranfer={onSignIn}/>
+              </div>
+            }
+          />
           <Route
             path="/home"
-            element={
-              id === "CEO" ? <HomeCEO /> : id === "LGD" ? <HomeGD /> : <HomeTK />
-            }
+            element={(() => {
+              switch (id) {
+                case "CEO":
+                  return <HomeCEO />;
+                case "LGD":
+                  return <HomeGD />;
+                case "LTK":
+                  return <HomeTK />;
+                case "EGD":
+                  return <HomeGDV />;
+                default:
+                  return <HomeNVTK />;
+              }
+            })()}
           />
           <Route
             path="/statistic"
@@ -260,6 +318,24 @@ const App = () => {
               )
             }
           />
+          <Route path="/regis" element={<StickyHeadTable />} />
+          <Route path="/TKpoint/createShipment" element={<StickyHeadTable />} />
+          <Route
+            path="/TKpoint/confirmShipment"
+            element={<StickyHeadTable />}
+          />
+          <Route path="/ship/createShipment" element={<StickyHeadTable />} />
+          <Route path="/ship/confirmStatus" element={<StickyHeadTable />} />
+          <Route path="/ship/statistic" element={<StatisticGDV />} />
+
+          {id === "ETK" && (
+            <>
+              <Route path="/createShipment/toGD" element={<ShipmentGD />} />
+              <Route path="/createShipment/toTK" element={<ShipmentTK />} />
+              <Route path="/confirm/fromGD" element={<ConfirmGD />} />
+              <Route path="/confirm/fromTK" element={<ConfirmTK />} />
+            </>
+          )}
         </Routes>
       </div>
     </>

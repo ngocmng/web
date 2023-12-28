@@ -1,9 +1,10 @@
-import  items  from "./ItemInfor";
+//import  items  from "./ItemInfor";
 
 import {
   AppBar,
   Avatar,
   Box,
+  Collapse,
   Divider,
   Drawer,
   IconButton,
@@ -19,15 +20,19 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 
 import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { NavbarContext } from "./NavbarContext";
 import UserInfo from "../UserInfo";
+
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import styles from "./NavItem.module.css";
 
 function ResponsiveDrawer(props) {
   const drawerWidth = 245;
   const nonDrawerWidth = 65;
 
-  const { window } = props;
+  const { window, items } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const { open, changeOpen } = useContext(NavbarContext);
   const [userInfoOpen, setUserInfoOpen] = useState(false);
@@ -38,6 +43,16 @@ function ResponsiveDrawer(props) {
 
   const handleDrawer = () => {
     changeOpen();
+  };
+
+  const [openItem, setOpenItem] = useState({});
+
+  // Hàm để xử lý việc mở/rút gọn mục
+  const handleToggle = (index) => {
+    setOpenItem((prevOpen) => ({
+      ...prevOpen,
+      [index]: !prevOpen[index],
+    }));
   };
 
   const drawer = (
@@ -73,8 +88,7 @@ function ResponsiveDrawer(props) {
           // backgroundColor: "var(--navbar-color)",
         }}
       >
-        
-        {items.map((item, index) => (
+        {/* {items.map((item, index) => (
           <ListItem key={index} disablePadding>
             <Link
               to={item.path}
@@ -94,6 +108,60 @@ function ResponsiveDrawer(props) {
               </ListItemButton>
             </Link>
           </ListItem>
+        ))} */}
+
+        {items.map((item, index) => (
+          <Fragment key={index}>
+            <ListItem disablePadding>
+              <Link
+                to={item.path}
+                style={{ textDecoration: "none", width: "100%" }}
+              >
+                <ListItemButton
+                  onClick={() => handleToggle(index)}
+                  sx={{
+                    transition: "0.3s",
+                    pl: open ? 1.5 : 1,
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText
+                    primary={item.title}
+                    sx={{ color: "var(--font1-color)" }}
+                  />
+                  {item.children &&
+                    (openItem[index] ? <ExpandLess className={styles["nav-icon"]}/> : <ExpandMore className={styles["nav-icon"]}/>)}
+                </ListItemButton>
+              </Link>
+            </ListItem>
+            {item.children && (
+              <Collapse in={openItem[index]} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {item.children.map((child, childIndex) => (
+                    <Link
+                      to={child.path}
+                      style={{ textDecoration: "none", width: "100%" }}
+                      key={childIndex}
+                    >
+                      <ListItemButton
+                        key={childIndex}
+                        sx={{
+                          transition: "0.3s",
+                          pl: open ? 2.1 : 1.5,
+                        }}
+                      >
+                        <ListItemIcon>{child.icon}</ListItemIcon>
+                        <ListItemText
+                          primary={child.title}
+                          sx={{ color: "var(--font1-color)" }}
+                        />
+                      </ListItemButton>
+                    </Link>
+                  ))}
+                </List>
+              </Collapse>
+            )}
+          </Fragment>
         ))}
       </List>
       <Divider />
@@ -109,7 +177,7 @@ function ResponsiveDrawer(props) {
             sx={{ transition: "0.3s", pl: open ? 4.5 : 1.5 }}
           >
             <ListItemIcon>
-              <Avatar>MG</Avatar>
+              <Avatar >MG</Avatar>
             </ListItemIcon>
             <ListItemText
               primary="Magic Post"

@@ -4,7 +4,7 @@ import ResponsiveDrawer from "./Navbar/ResponsiveNavbar";
 import { AuthContext } from "./Authentication/AuthProvider";
 import Warning from "./Warning";
 
-export default function Page({ children }) {
+export default function Page({ children, items }) {
   const currentUser = useContext(AuthContext);
   return (
     <>
@@ -12,7 +12,7 @@ export default function Page({ children }) {
         <Warning />
       ) : (
         <>
-          <ResponsiveDrawer />
+          <ResponsiveDrawer items={items}/>
           <Box
             sx={{
               marginTop: { xs: "45px", sm: "45px", md: "0px" },

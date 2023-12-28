@@ -8,6 +8,7 @@ import { updateGraph } from "./ChartFunction";
 import Select from "../../components/Filter/Select";
 import { dexieDB } from "../../database/cache";
 import { useLiveQuery } from "dexie-react-hooks";
+import { itemsCEO } from "../../components/Navbar/ItemInfor";
 
 const StatisticCEO = () => {
   const orders = useLiveQuery(() => dexieDB.table("orderHistory").toArray());
@@ -170,7 +171,7 @@ const ordersTK = useLiveQuery(() =>
   //console.log(filteredGD);
 
   return (
-    <Page>
+    <Page items={itemsCEO}>
       <Grid container justifyContent="center" spacing={0} height={1}>
         {/* c1 */}
         <Grid item lg={6} md={6} xs={12}>
@@ -244,7 +245,7 @@ const ordersTK = useLiveQuery(() =>
                   height: "90%",
                 }}
               >
-                <BarsDataset data={graph} view={"all"} />
+                <BarsDataset data={graph} view={"all"} label1={"Hàng gửi"} label2={"Hàng nhận"}/>
               </Box>
             </Box>
           </Stack>
@@ -293,7 +294,7 @@ const ordersTK = useLiveQuery(() =>
                   height: "50%",
                 }}
               >
-                <BarsDataset data={graphGD} />
+                <BarsDataset data={graphGD} label1={"Hàng gửi"} label2={"Hàng nhận"} />
               </Box>
             </Box>
             {/* c3 */}
@@ -343,7 +344,7 @@ const ordersTK = useLiveQuery(() =>
                   height: "50%",
                 }}
               >
-                <BarsDataset data={graphTK} />
+                <BarsDataset data={graphTK} label1={"Hàng đi"} label2={"Hàng đến"}/>
               </Box>
             </Box>
           </Stack>

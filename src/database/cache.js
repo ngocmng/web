@@ -9,9 +9,10 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
-const dexieDB = new Dexie("cachedUser23");
+import { useLiveQuery } from "dexie-react-hooks";
+
+const dexieDB = new Dexie("cachedUser30");
 dexieDB.version(1).stores({
   GDsystem: "id",
   TKsystem: "id",
@@ -21,6 +22,7 @@ dexieDB.version(1).stores({
   GDVacc: "id",
   orderHistory: "historyID, orderID, currentLocation",
   orders: "id",
+  shipment: "id",
 });
 
 async function deleteDataFromFireStoreAndDexie(collectionName, id) {
@@ -105,71 +107,24 @@ async function addDataToDexieTable(tableName, newData) {
   }
 }
 
-// function syncDexieToFirestore(tableName, collectionName, fieldsToSync) {
-//   dexieDB[tableName].toArray().then((data) => {
-//     data.forEach(async (record) => {
-//       if (record.id) {
-//         const { id, ...dataFields } = record;
-//         const updateObject = {};
-//         fieldsToSync.forEach((field) => {
-//           updateObject[field] = dataFields[field];
-//         });
-
-//         const docRef = doc(fireDB, collectionName, id.toString());
-//         await setDoc(docRef, updateObject);
-//       }
-//     });
-//   });
-// }
-
-// const fetchData = async (collectionName, setter) => {
-//   try {
-//     const collectionRef = fireDB.collection(collectionName);
-//     console.log("fetch")
-//     const querySnapshot = await collectionRef.get();
-//     console.log(querySnapshot);
-//     const newData = querySnapshot.docs.map((doc) => ({
-//       id: doc.id,
-//       ...doc.data(),
-//     }));
-//     setter(newData);
-//   } catch (error) {
-//     console.error('Error fetching data:', error);
-//   }
-// };
-
-// const registerUser = (email, password) => {
-//   createUserWithEmailAndPassword(fireAuth, email, password)
-//   firebase.auth().createUserWithEmailAndPassword(email, password)
-//   .then(() => {
-//     console.log("Registered with:", email);
-//   })
-//   .catch((error) => {
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//     console.error(errorCode, errorMessage);
-//   });
-//     // .then((userCredential) => {
-//     //   console.log("Registered with:", userCredential.user.email);
-//     // })
-//     // .catch((error) => {
-//     //   console.error(error);
-//     // });
-// };
-
 const loadUserState = (email) => {
   localStorage.setItem("email", email);
   const idCenter = email.slice(0, email.indexOf("@")).toUpperCase();
-  console.log(idCenter);
   const id = "L" + idCenter;
-  if (id.slice(0, 3) === "LTK" || id.slice(0, 3) === "LGD")
+  if(idCenter.length === 7) 
+    localStorage.setItem("id", "E" + idCenter.slice(0, 4));
+  else if (id.slice(0, 3) === "LTK" || id.slice(0, 3) === "LGD")
     localStorage.setItem("id", id);
   else localStorage.setItem("id", "CEO");
-  const role = id.slice(0, 3) === "LTK" ? "LeadTKacc" : "LeadGDacc";
+  const role = id.slice(1, 3) === "TK" ? "LeadTKacc" : "LeadGDacc";
   //const center = id.slice(0, 2) === "TK" ? "TKsystem" : "GDsystem";
   const loadProfile = async () => {
-    const useDoc = await getDoc(doc(fireDB, role, localStorage.getItem("id")));
-    const data = useDoc.data();
+    // const useDoc = await getDoc(doc(fireDB, role, localStorage.getItem("id")));
+    // const data = useDoc.data();
+
+
+    const data = await dexieDB.table(role).get("L" + localStorage.getItem("id").slice(1));
+  
     // const useDocCenter = await getDoc(doc(fireDB, center, idCenter));
     // const dataCenter = useDocCenter.data();
     // console.log(dataCenter);
@@ -188,10 +143,6 @@ const loadUserState = (email) => {
       localStorage.setItem("name", "Trần Thị Trà Giang");
       localStorage.setItem("center", "Magic Post");
       localStorage.setItem("phone", "0868809172");
-      // localStorage.setItem(
-      //   "address",
-      //   "144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội"
-      // );
     }
   };
   loadProfile();
@@ -211,3 +162,5 @@ export {
   updateDataFromFireStoreAndDexie,
   addDataToFireStoreAndDexie,
 };
+
+// Mới chỉ xử lí phần lấy id, chưa xử lí phần load profile

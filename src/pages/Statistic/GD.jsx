@@ -7,6 +7,7 @@ import { updateGraph } from "./ChartFunction";
 import { dexieDB } from "../../database/cache";
 import { useLiveQuery } from "dexie-react-hooks";
 import OrdersTable from "../../components/Table/Orders";
+import { itemsLeadGD } from "../../components/Navbar/ItemInfor";
 
 const StatisticGD = () => {
   const orders = useLiveQuery(() =>
@@ -81,7 +82,7 @@ const StatisticGD = () => {
   const switchTime = (mode) => setTimeView(mode);
 
   return (
-    <Page>
+    <Page items={itemsLeadGD}>
       <Box sx={{ flexGrow: 1, mt: "10px", mb: "10px", ml: "20px", mr: "20px" }}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -185,7 +186,7 @@ const StatisticGD = () => {
                       },
                     }}
                   >
-                    <BarsDataset data={graph} />
+                    <BarsDataset data={graph} label1={"Hàng gửi"} label2={"Hàng nhận"}/>
                   </Box>
                 </Box>
               </Box>

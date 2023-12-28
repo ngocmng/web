@@ -6,6 +6,7 @@ import SignUpForm from "../../components/FormInput/SignUpAccForm";
 import SignUpGDVForm from "../../components/FormInput/SignUpGdvAccForm";
 import { useLiveQuery } from "dexie-react-hooks";
 import { addDataToFireStoreAndDexie, dexieDB, registerUser } from "../../database/cache";
+import { itemsLeadGD } from "../../components/Navbar/ItemInfor";
 
 const HeadGDAccount = () => {
   const id = localStorage.getItem("id").slice(1);
@@ -73,7 +74,7 @@ const HeadGDAccount = () => {
     submit();
   };
   return (
-    <Page>
+    <Page items={itemsLeadGD}>
       <Box
         sx={{
           height: { xs: "100%", md: "80%" },

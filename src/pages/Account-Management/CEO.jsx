@@ -6,6 +6,7 @@ import GD_Account from "../../components/Table/GD_Account";
 import TK_Account from "../../components/Table/TK_Account";
 import { useLiveQuery } from "dexie-react-hooks";
 import { dexieDB } from "../../database/cache";
+import { itemsCEO } from "../../components/Navbar/ItemInfor";
 
 const Account = () => {
   const dataGD = useLiveQuery(() => dexieDB.table("LeadGDacc").toArray());  
@@ -22,7 +23,7 @@ const Account = () => {
     );
   };
   return (
-    <Page>
+    <Page items={itemsCEO}>
       <Grid container justifyContent="center" spacing={0} height={1}>
         <Grid
           item

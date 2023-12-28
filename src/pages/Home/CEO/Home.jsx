@@ -2,11 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { Grid, Box, Typography, Stack } from "@mui/material";
 import Page from "../../../components/Page";
 import review from "./Review";
+import { itemsCEO, itemsGDV, itemsNVTK } from "../../../components/Navbar/ItemInfor";
 
 const HomeCEO = () => {
   const navigate = useNavigate();
   return (
-    <Page>
+    <Page items={itemsCEO}>
       <Grid
         container
         sx={{
@@ -144,12 +145,14 @@ const HomeCEO = () => {
                 borderRight={{
                   xs: "1px solid var(--border-color)",
                   sm: "1px solid var(--border-color)",
-                  md: index !== 1 ? "1.5px solid var(--border-color)" : "none",
+                  md: "1px solid var(--border-color)",
+                  //md: index !== 1 ? "1.5px solid var(--border-color)" : "none",
                 }}
                 borderLeft={{
                   xs: "1px solid var(--border-color)",
                   sm: index !== 1 ? "1px solid var(--border-color)" : "none",
-                  md: index !== 1 ? "1.5px solid var(--border-color)" : "none",
+                  md: "1px solid var(--border-color)",
+                  //md: index !== 1 ? "1.5px solid var(--border-color)" : "none",
                 }}
                 height={{
                   xs: "auto",

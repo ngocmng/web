@@ -5,7 +5,7 @@ import { axisClasses } from "@mui/x-charts";
 
 // const valueFormatter = (value) => `${value}mm`;
 
-export default function BarsDataset({ data, view }) {
+export default function BarsDataset({ data, view, label1, label2 }) {
   //console.log(data);
   const chartSetting = {
     // width: view === "gd" ? 550 : 550,
@@ -19,8 +19,8 @@ export default function BarsDataset({ data, view }) {
       dataset={data[0].data}
       xAxis={[{ scaleType: "band", dataKey: "x" }]}
       series={[
-        { dataKey: "sent", label: "Hàng gửi", color: "var(--bar1-color)" },
-        { dataKey: "receive", label: "Hàng nhận", color: "var(--bar2-color)" },
+        { dataKey: "sent", label: label1, color: "var(--bar1-color)" },
+        { dataKey: "receive", label: label2, color: "var(--bar2-color)" },
       ]}
       {...chartSetting}
     />
