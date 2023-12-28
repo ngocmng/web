@@ -1,5 +1,5 @@
 import Dexie from "dexie";
-import 'firebase/auth';
+import "firebase/auth";
 import { fireAuth, fireDB } from "./firebase";
 import {
   doc,
@@ -12,7 +12,7 @@ import {
 
 import { useLiveQuery } from "dexie-react-hooks";
 
-const dexieDB = new Dexie("cachedUser31");
+const dexieDB = new Dexie("cachedUser34");
 dexieDB.version(1).stores({
   GDsystem: "id",
   TKsystem: "id",
@@ -90,8 +90,8 @@ async function addDataToFireStoreAndDexie(collectionName, newData) {
     if (collectionName === "NVTKacc") {
       alert("Tài khoản nhân viên điểm tập kết đã được thêm thành công");
     }
-    if(collectionName === "GDVacc") 
-    alert("Tài khoản giao dịch viên đã được thêm thành công");
+    if (collectionName === "GDVacc")
+      alert("Tài khoản giao dịch viên đã được thêm thành công");
   } catch (error) {
     console.error("Loi khi add trong firestore: ", error);
   }
@@ -111,7 +111,7 @@ const loadUserState = (email) => {
   localStorage.setItem("email", email);
   const idCenter = email.slice(0, email.indexOf("@")).toUpperCase();
   const id = "L" + idCenter;
-  if(idCenter.length === 7) 
+  if (idCenter.length === 7)
     localStorage.setItem("id", "E" + idCenter.slice(0, 4));
   else if (id.slice(0, 3) === "LTK" || id.slice(0, 3) === "LGD")
     localStorage.setItem("id", id);
@@ -122,9 +122,10 @@ const loadUserState = (email) => {
     // const useDoc = await getDoc(doc(fireDB, role, localStorage.getItem("id")));
     // const data = useDoc.data();
 
+    const data = await dexieDB
+      .table(role)
+      .get("L" + localStorage.getItem("id").slice(1));
 
-    const data = await dexieDB.table(role).get("L" + localStorage.getItem("id").slice(1));
-  
     // const useDocCenter = await getDoc(doc(fireDB, center, idCenter));
     // const dataCenter = useDocCenter.data();
     // console.log(dataCenter);
@@ -159,8 +160,11 @@ export {
   loadUserState,
   clearUserState,
   deleteDataFromFireStoreAndDexie,
+  deleteDataFromDexieTable,
   updateDataFromFireStoreAndDexie,
+  updateDataFromDexieTable,
   addDataToFireStoreAndDexie,
+  addDataToDexieTable,
 };
 
 // Mới chỉ xử lí phần lấy id, chưa xử lí phần load profile

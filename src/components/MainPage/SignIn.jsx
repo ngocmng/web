@@ -58,14 +58,17 @@ const SignIn = ({ open, onClose, transfer }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Đăng nhập</DialogTitle>
+      <DialogTitle style={{ fontWeight: 'bold', color: 'green', fontSize: 20 }}>Đăng nhập</DialogTitle>
       <DialogContent
-        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+        sx={{ display: "flex", flexDirection: "column", alignItems: "center"}}
       >
         <TextField
           required
           name="email"
           label="Email"
+          InputLabelProps={{
+            style: { color: 'green' }, 
+          }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end" sx={{ zIndex: 10 }}>
@@ -85,6 +88,9 @@ const SignIn = ({ open, onClose, transfer }) => {
           type="password"
           name="password"
           label="Mật khẩu"
+          InputLabelProps={{
+            style: { color: 'green' }, 
+          }}
           required
           InputProps={{
             endAdornment: (

@@ -143,7 +143,8 @@ function createDataOrderHistory({
 }
 
 const OrderStatus = () => {
-  const orderID = "DH001";
+  //const orderID = "DH002";
+  const orderID = localStorage.getItem("orderCode");
   const dataOrders = useLiveQuery(() =>
     dexieDB
       .table("orders")

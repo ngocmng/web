@@ -15,12 +15,26 @@ const app = initializeApp({
   // appId: "1:968165012418:web:d60163f26d79ac342cdc5b",
 
 
-  apiKey: "AIzaSyAF3bIMKaPnfUULyQnEtQbgeBc7-XfZv80",
-  authDomain: "upload-file-demo-d1beb.firebaseapp.com",
-  projectId: "upload-file-demo-d1beb",
-  storageBucket: "upload-file-demo-d1beb.appspot.com",
-  messagingSenderId: "456204958602",
-  appId: "1:456204958602:web:e1cb5712a2db746dcda673"
+  // apiKey: "AIzaSyAF3bIMKaPnfUULyQnEtQbgeBc7-XfZv80",
+  // authDomain: "upload-file-demo-d1beb.firebaseapp.com",
+  // projectId: "upload-file-demo-d1beb",
+  // storageBucket: "upload-file-demo-d1beb.appspot.com",
+  // messagingSenderId: "456204958602",
+  // appId: "1:456204958602:web:e1cb5712a2db746dcda673"
+
+  // apiKey: "AIzaSyBnBaKJk_zc01_XmgR5A_mjv5cKGWypY2I",
+  // authDomain: "magic-post2.firebaseapp.com",
+  // projectId: "magic-post2",
+  // storageBucket: "magic-post2.appspot.com",
+  // messagingSenderId: "746792341563",
+  // appId: "1:746792341563:web:f3f3ede47e51bfa191cc1e"
+
+  apiKey: "AIzaSyBrUUxrvEmUl5KJ1DCoFxFDeuYVfKTIsww",
+  authDomain: "magic-post1.firebaseapp.com",
+  projectId: "magic-post1",
+  storageBucket: "magic-post1.appspot.com",
+  messagingSenderId: "318952366608",
+  appId: "1:318952366608:web:94a5c380dcac947e01a095"
 
   // apiKey: "AIzaSyB4iOWmclb_p_YVm8QdUIO9o6RECiXYsvo",
   // authDomain: "magicpost-224ab.firebaseapp.com",

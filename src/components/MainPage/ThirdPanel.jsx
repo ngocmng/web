@@ -22,22 +22,22 @@ const ThirdPanel = () => {
 
   const services = [
     {
-      title: "EMS TÀI LIỆU",
-      description: "EMS Tài liệu là dịch vụ nhận gửi, vận chuyển và phát các loại thư, tài liệu trong nước theo chỉ tiêu thời gian tiêu chuẩn được Tổng công ty EMS công bố.",
+      title: "MAGIC POST TÀI LIỆU",
+      description: "MAGIC POST Tài liệu là dịch vụ nhận gửi, vận chuyển và phát các loại thư, tài liệu trong nước theo chỉ tiêu thời gian tiêu chuẩn được Tổng công ty MAGIC POST công bố.",
       Icon: LocalShippingIcon,
     },
     {
-      title: "CHUYỂN PHÁT NHANH EMS QUỐC TẾ",
-      description: "Chuyển phát nhanh EMS Quốc tế là dịch vụ nhận gửi, vận chuyển và phát các loại thư, tài liệu, vật phẩm, hàng hóa quốc tế theo chỉ tiêu thời gian tiêu chuẩn được Tổng công ty EMS công bố.",
+      title: "CHUYỂN PHÁT NHANH MAGIC POST QUỐC TẾ",
+      description: "Chuyển phát nhanh MAGIC POST Quốc tế là dịch vụ nhận gửi, vận chuyển và phát các loại thư, tài liệu, vật phẩm, hàng hóa quốc tế theo chỉ tiêu thời gian tiêu chuẩn được Tổng công ty MAGIC POST công bố.",
       Icon: PublicIcon,
     },
     {
-      title: "EMS HOẢ TỐC",
-      description: "EMS Hoả tốc là dịch vụ chất lượng cao có chỉ tiêu thời gian toàn trình rút ngắn so với dịch vụ EMS Tài liệu/Hàng hoá nhanh, trong đó bưu gửi được ưu tiên chuyển phát đến người nhận trong khung thời gian...",
+      title: "MAGIC POST HOẢ TỐC",
+      description: "MAGIC POST Hoả tốc là dịch vụ chất lượng cao có chỉ tiêu thời gian toàn trình rút ngắn so với dịch vụ MAGIC POST Tài liệu/Hàng hoá nhanh, trong đó bưu gửi được ưu tiên chuyển phát đến người nhận trong khung thời gian...",
       Icon: DesktopWindowsIcon,
     }, {
-      title: "EMS THƯƠNG MẠI ĐIỆN TỬ",
-      description: "Dịch vụ EMS Thương mại điện tử là dịch vụ chuyển phát cho khách hàng Thương mại điện tử (TMĐT) và thực hiện thu hộ/không thu hộ một khoản tiền theo yêu cầu để hoàn thành hoạt động giao dịch mua bán",
+      title: "MAGIC POST THƯƠNG MẠI ĐIỆN TỬ",
+      description: "Dịch vụ MAGIC POST Thương mại điện tử là dịch vụ chuyển phát cho khách hàng Thương mại điện tử (TMĐT) và thực hiện thu hộ/không thu hộ một khoản tiền theo yêu cầu để hoàn thành hoạt động giao dịch mua bán",
       Icon: SendToMobileIcon,
     },
 
